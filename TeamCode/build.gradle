@@ -22,7 +22,24 @@ android {
         jniLibs.useLegacyPackaging true
     }
 }
+repositories {
+    maven {
+        url "https://repo.dairy.foundation/releases"
+
+    }
+    maven {
+        url = 'https://maven.brott.dev/'
+    }
+}
+
 
 dependencies {
     implementation project(':FtcRobotController')
+    implementation "dev.frozenmilk.dairy:Core:1.0.0"
+    implementation "dev.frozenmilk.dairy:Util:1.0.1"
+    implementation "dev.frozenmilk.mercurial:Mercurial:1.0.0"
+    implementation "com.acmerobotics.roadrunner:ftc:0.1.14"
+    implementation "com.acmerobotics.roadrunner:core:1.0.0"
+    implementation "com.acmerobotics.roadrunner:actions:1.0.0"
+    implementation "com.acmerobotics.dashboard:dashboard:0.4.16"
 }
