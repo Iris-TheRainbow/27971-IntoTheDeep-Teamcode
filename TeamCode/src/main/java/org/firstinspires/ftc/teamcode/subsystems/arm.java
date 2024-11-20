@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import androidx.annotation.NonNull;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -19,6 +20,7 @@ import kotlin.annotation.MustBeDocumented;
 
 public class arm implements Subsystem {
     public static final arm INSTANCE = new arm();
+    private static Servo leftArm, rightArm;
 
     private arm() { }
 
@@ -36,21 +38,36 @@ public class arm implements Subsystem {
     public void setDependency(@NonNull Dependency<?> dependency) { this.dependency = dependency; }
 
     @Override
-    public void preUserInitHook(@NonNull Wrapper opMode) { setDefaultCommand(command()); }
-
-    @Override
     public void postUserInitHook(@NonNull Wrapper opMode) {
         HardwareMap hwmap = opMode.getOpMode().hardwareMap;
+        leftArm = hwmap.get(Servo.class, "armLeft");
+        rightArm = hwmap.get(Servo.class, "armRight");
+        leftArm.setDirection(Servo.Direction.REVERSE);
     }
 
-    public static void function() {
-
+    public static void setPosition(double position) {
+        leftArm.setPosition(position);
+        rightArm.setPosition(position);
     }
 
     @NonNull
-    public static Lambda command() {
-        return new Lambda("simple")
+    public static Lambda armStow() {
+        return new Lambda("arm stow")
                 .addRequirements(INSTANCE)
-                .setExecute(arm::function);
+                .setExecute(() -> setPosition(0));
+    }
+
+    @NonNull
+    public static Lambda armOut(){
+        return new Lambda("arm out")
+                .addRequirements(INSTANCE)
+                .setExecute(() -> setPosition(.640));
+    }
+
+    @NonNull
+    public static Lambda armUp(){
+        return new Lambda("arm up")
+                .addRequirements(INSTANCE)
+                .setExecute(() -> setPosition(.45));
     }
 }

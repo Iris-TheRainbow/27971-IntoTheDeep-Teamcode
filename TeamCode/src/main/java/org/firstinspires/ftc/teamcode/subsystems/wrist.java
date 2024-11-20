@@ -17,12 +17,13 @@ import dev.frozenmilk.dairy.core.wrapper.Wrapper;
 import dev.frozenmilk.mercurial.commands.Lambda;
 import dev.frozenmilk.mercurial.subsystems.Subsystem;
 import kotlin.annotation.MustBeDocumented;
+import kotlin.internal.InlineOnly;
 
-public class arm implements Subsystem {
-    public static final arm INSTANCE = new arm();
+public class wrist implements Subsystem {
+    public static final wrist INSTANCE = new wrist();
     public static Servo leftWrist, rightWrist;
 
-    private arm() { }
+    private wrist() { }
 
     @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.TYPE) @MustBeDocumented
     @Inherited
@@ -40,26 +41,28 @@ public class arm implements Subsystem {
     @Override
     public void postUserInitHook(@NonNull Wrapper opMode) {
         HardwareMap hwmap = opMode.getOpMode().hardwareMap;
-        leftWrist = hwmap.get(Servo.class, "leftWrist");
-        rightWrist = hwmap.get(Servo.class, "rightWrist");
-        rightWrist.setDirection(Servo.Direction.REVERSE);
+        leftWrist = hwmap.get(Servo.class, "wristLeft");
+        rightWrist = hwmap.get(Servo.class, "wristRight");
+        leftWrist.setDirection(Servo.Direction.REVERSE);
+        setPosition(.6);
     }
 
-    public static void flat() {
-        leftWrist.setPosition(.3);
-        rightWrist.setPosition(.3);
+    public static void setPosition(double position) {
+        leftWrist.setPosition(position);
+        rightWrist.setPosition(position);
     }
-
-    public static void down(){
-        leftWrist.setPosition(.6);
-        rightWrist.setPosition(.6);
-    }
-
 
     @NonNull
-    public static Lambda command() {
-        return new Lambda("simple")
+    public static Lambda wristFlat(){
+        return new Lambda("wrist flat")
                 .addRequirements(INSTANCE)
-                .setExecute(arm::function);
+                .setExecute(() -> setPosition(.3));
+    }
+
+    @NonNull
+    public static Lambda wristDown(){
+        return new Lambda("wrist down")
+                .addRequirements(INSTANCE)
+                .setExecute(() -> setPosition(.6));
     }
 }

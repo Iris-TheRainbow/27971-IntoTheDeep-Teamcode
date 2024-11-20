@@ -5,7 +5,6 @@ public class PDFController {
     private double kP, kD, kF;
     private double setPoint;
     private double measuredValue;
-    private double minIntegral, maxIntegral;
 
     private double errorVal_p;
     private double errorVal_v;
@@ -42,9 +41,6 @@ public class PDFController {
 
         setPoint = sp;
         measuredValue = pv;
-
-        minIntegral = -1.0;
-        maxIntegral = 1.0;
 
         lastTimeStamp = 0;
         period = 0;
@@ -114,7 +110,7 @@ public class PDFController {
      * @return the PIDF coefficients
      */
     public double[] getCoefficients() {
-        return new double[]{kP, kI, kD, kF};
+        return new double[]{kP, kD, kF};
     }
 
     /**
@@ -194,22 +190,15 @@ public class PDFController {
         e(t) = sp - pv, then the total error, E(t), equals sp*t - pv*t.
          */
         totalError += period * (setPoint - measuredValue);
-        totalError = totalError < minIntegral ? minIntegral : Math.min(maxIntegral, totalError);
 
         // returns u(t)
-        return kP * errorVal_p + kI * totalError + kD * errorVal_v + kF * setPoint;
+        return kP * errorVal_p + kD * errorVal_v + kF * setPoint;
     }
 
-    public void setPIDF(double kp, double ki, double kd, double kf) {
+    public void setPDF(double kp, double kd, double kf) {
         kP = kp;
-        kI = ki;
         kD = kd;
         kF = kf;
-    }
-
-    public void setIntegrationBounds(double integralMin, double integralMax) {
-        minIntegral = integralMin;
-        maxIntegral = integralMax;
     }
 
     public void clearTotalError() {
@@ -218,10 +207,6 @@ public class PDFController {
 
     public void setP(double kp) {
         kP = kp;
-    }
-
-    public void setI(double ki) {
-        kI = ki;
     }
 
     public void setD(double kd) {
@@ -234,10 +219,6 @@ public class PDFController {
 
     public double getP() {
         return kP;
-    }
-
-    public double getI() {
-        return kI;
     }
 
     public double getD() {

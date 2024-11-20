@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.roadrunner.ftc.SparkFunOTOSCorrected;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
@@ -32,6 +33,7 @@ public class drive implements Subsystem {
         public static final drive INSTANCE = new drive();
         private static DcMotorEx leftFront, leftBack, rightFront, rightBack;
         private static SparkFunOTOSCorrected otos;
+        private static SparkFunOTOS.Pose2D pose;
 
         private drive() { }
 
@@ -61,20 +63,25 @@ public class drive implements Subsystem {
                 System.out.println(otos.setAngularScalar(PARAMS.angularScalar));
                 otos.setAngularUnit(AngleUnit.RADIANS);
                 System.out.println(otos.calibrateImu(255, false));
+                setDefaultCommand(driveCommand());
+                leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+                leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
         @Override
-        public void postUserInitLoopHook(@NonNull Wrapper opMode){ if (otos.getImuCalibrationProgress() == 0){ setDefaultCommand(driveCommand()); } }
+        public void postUserInitLoopHook(@NonNull Wrapper opMode){ //if (otos.getImuCalibrationProgress() == 0){ setDefaultCommand(driveCommand()); }
+        }
         @Override
-        public void postUserLoopHook(@NonNull Wrapper opMode){ if (otos.getImuCalibrationProgress() == 0){ setDefaultCommand(driveCommand()); } }
+        public void postUserLoopHook(@NonNull Wrapper opMode){ //if (otos.getImuCalibrationProgress() == 0){ setDefaultCommand(driveCommand()); }
+        }
 
         public static void driveUpdate() {
                 // read the gamepads
                 double rightX = Mercurial.gamepad1().leftStickX().state();
-                double rightY = -Mercurial.gamepad1().leftStickY().state();
+                double rightY = Mercurial.gamepad1().leftStickY().state();
                 double turn = Mercurial.gamepad1().rightStickX().state();
 
-                double heading = otos.getPosition().h;
+                double heading = 0; //otos.getPosition().h;
                 // Do the kinematics math
                 double rotX = (rightX * Math.cos(-heading) - rightY * Math.sin(-heading)) * 1.1;
                 double rotY = rightX * Math.sin(-heading) + rightY * Math.cos(-heading);
@@ -90,7 +97,7 @@ public class drive implements Subsystem {
                 rightFront.setPower(rfPower);
         }
 
-        public static void resetHeading(){
+        private static void resetHeading(){
                 otos.setPosition(new SparkFunOTOS.Pose2D(0, 0, 0));
         }
 

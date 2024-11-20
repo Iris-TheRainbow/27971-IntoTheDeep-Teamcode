@@ -11,9 +11,7 @@ import dev.frozenmilk.mercurial.commands.Command;
 public class MercurialAction implements Action {
     private final Command command;
     private boolean initialized = false;
-    public MercurialAction(Command command) {
-        this.command = command;
-    }
+    public MercurialAction(Command command) { this.command = command; }
 
     @Override
     public boolean run(@NonNull TelemetryPacket packet) {

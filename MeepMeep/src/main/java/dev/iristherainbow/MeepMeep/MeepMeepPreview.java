@@ -13,15 +13,30 @@ public class MeepMeepPreview {
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
+                .setDimensions(15.5, 15.5)
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(24, -62 , Math.toRadians(90)))
-                        .splineTo(new Vector2d(6, -36), Math.toRadians(90))
-                        .waitSeconds(5)
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-24, -62.5, Math.toRadians(90)))
+                .strafeTo(new Vector2d(-24, -56))
+                .splineTo(new Vector2d(-51, -57), Math.toRadians(210))
+                        .waitSeconds(3)
                         .setReversed(true)
-                        .splineTo(new Vector2d( 40, -62), Math.toRadians(-90))
-                                .build());
+                        .splineTo(new Vector2d(-36, -48), Math.toRadians(0))
+                        .setReversed(false)
+                        .splineTo(new Vector2d( -48, -40), Math.toRadians(90))
+                        .waitSeconds(2)
+                        .setReversed(true)
+                        .splineTo(new Vector2d(-36, -48), Math.toRadians(0))
+                        .setReversed(false)
+                        .splineTo(new Vector2d(-54, -54), Math.toRadians(225))
+                        .waitSeconds(2)
+                        .setReversed(true)
+                        .splineTo(new Vector2d(-36, -48), Math.toRadians(0))
+                        .setReversed(false)
+
+                        .splineTo(new Vector2d(-26, -12), Math.toRadians(0))
+                        .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
                 .setDarkMode(true)
