@@ -22,11 +22,13 @@ import dev.frozenmilk.dairy.core.dependency.annotation.SingleAnnotation;
 import dev.frozenmilk.dairy.core.wrapper.Wrapper;
 
 public class SilkRoad implements Feature {
-    private Dependency<?> dependency = new SingleAnnotation<>(org.firstinspires.ftc.teamcode.util.SilkRoad.Attach.class);
+    private Dependency<?> dependency = new SingleAnnotation<>(SilkRoad.Attach.class);
     private static FtcDashboard dash;
     private static Canvas canvas;
     private static Action actions;
     private static boolean run;
+    private static boolean auto;
+
     @NonNull
     @Override
     public Dependency<?> getDependency() { return dependency; }
@@ -38,17 +40,25 @@ public class SilkRoad implements Feature {
 
     private SilkRoad() {}
 
-    public static final org.firstinspires.ftc.teamcode.util.SilkRoad INSTANCE = new org.firstinspires.ftc.teamcode.util.SilkRoad();
+    public static final SilkRoad INSTANCE = new SilkRoad();
 
     @Override
     public void postUserInitHook(@NotNull Wrapper opMode) {
         dash = FtcDashboard.getInstance();
         canvas = new Canvas();
         run = true;
+        auto = true;
     }
 
     @Override
     public void postUserLoopHook(@NotNull Wrapper opMode) {
+        if (auto) {
+            SilkRoad.update();
+        }
+    }
+
+    public static void manualMode(){ SilkRoad.auto = false;}
+    public static void update(){
         if (run && !Thread.currentThread().isInterrupted()) {
             TelemetryPacket packet = new TelemetryPacket();
             packet.fieldOverlay().getOperations().addAll(canvas.getOperations());
@@ -58,10 +68,7 @@ public class SilkRoad implements Feature {
             dash.sendTelemetryPacket(packet);
         }
     }
-
-    public static void RunAsync(Action actions){
-        SilkRoad.actions = actions;
-    }
+    public static void RunAsync(Action actions){ SilkRoad.actions = actions; }
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE)

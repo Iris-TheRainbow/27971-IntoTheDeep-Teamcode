@@ -34,7 +34,6 @@ public class MeepMeepPreview {
                         .setReversed(true)
                         .splineTo(new Vector2d(-36, -48), Math.toRadians(0))
                         .setReversed(false)
-
                         .splineTo(new Vector2d(-26, -12), Math.toRadians(0))
                         .build());
 

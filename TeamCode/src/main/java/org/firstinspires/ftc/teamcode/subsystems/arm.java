@@ -5,6 +5,8 @@ import androidx.annotation.NonNull;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.util.Waiter;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
@@ -21,6 +23,7 @@ import kotlin.annotation.MustBeDocumented;
 public class arm implements Subsystem {
     public static final arm INSTANCE = new arm();
     private static Servo leftArm, rightArm;
+    private static Waiter waiter;
 
     private arm() { }
 
@@ -54,20 +57,32 @@ public class arm implements Subsystem {
     public static Lambda armStow() {
         return new Lambda("arm stow")
                 .addRequirements(INSTANCE)
-                .setExecute(() -> setPosition(0));
+                .setInit(() -> {
+                    setPosition(0);
+                    waiter.start(500);
+                })
+                .setFinish(() -> waiter.isDone());
     }
 
     @NonNull
     public static Lambda armOut(){
         return new Lambda("arm out")
                 .addRequirements(INSTANCE)
-                .setExecute(() -> setPosition(.640));
+                .setInit(() -> {
+                    setPosition(.640);
+                    waiter.start(500);
+                })
+                .setFinish(() -> waiter.isDone());
     }
 
     @NonNull
     public static Lambda armUp(){
         return new Lambda("arm up")
                 .addRequirements(INSTANCE)
-                .setExecute(() -> setPosition(.45));
+                .setInit(() -> {
+                    setPosition(.45);
+                    waiter.start(500);
+                })
+                .setFinish(() -> waiter.isDone());
     }
 }

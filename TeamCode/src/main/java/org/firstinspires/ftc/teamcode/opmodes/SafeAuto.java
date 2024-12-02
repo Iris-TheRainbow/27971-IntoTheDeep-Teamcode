@@ -11,24 +11,22 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.roadrunner.SparkFunOTOSDrive;
 import org.firstinspires.ftc.teamcode.subsystems.arm;
-import org.firstinspires.ftc.teamcode.subsystems.claw;
+import org.firstinspires.ftc.teamcode.subsystems.intake;
 import org.firstinspires.ftc.teamcode.subsystems.lift;
-import org.firstinspires.ftc.teamcode.subsystems.wrist;
+import org.firstinspires.ftc.teamcode.subsystems.deposit;
 import org.firstinspires.ftc.teamcode.util.MercurialAction;
 import org.firstinspires.ftc.teamcode.util.SilkRoad;
 
-import dev.frozenmilk.dairy.core.util.controller.calculation.pid.DoubleComponent;
 import dev.frozenmilk.dairy.core.util.features.BulkRead;
 import dev.frozenmilk.mercurial.Mercurial;
 import dev.frozenmilk.mercurial.commands.groups.Parallel;
-import kotlin.jvm.internal.TypeParameterReference;
 
 @Autonomous(name = "safe spec")
 @SilkRoad.Attach
 @Mercurial.Attach
 @lift.Attach
-@claw.Attach
-@wrist.Attach
+@intake.Attach
+@deposit.Attach
 @arm.Attach
 @BulkRead.Attach
 public class SafeAuto extends OpMode {
@@ -50,7 +48,7 @@ public class SafeAuto extends OpMode {
     public void start(){
         SilkRoad.RunAsync(
                 new SequentialAction(
-                        new MercurialAction(new Parallel(claw.closeClaw(), wrist.wristDown(), arm.armStow(), lift.goTo(0))),
+                        new MercurialAction(new Parallel(intake.closeClaw(), deposit.wristDown(), arm.armStow(), lift.goTo(0))),
                         new SleepAction(1),
                         path0
                         )

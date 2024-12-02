@@ -11,9 +11,9 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.roadrunner.SparkFunOTOSDrive;
 import org.firstinspires.ftc.teamcode.subsystems.arm;
-import org.firstinspires.ftc.teamcode.subsystems.claw;
+import org.firstinspires.ftc.teamcode.subsystems.intake;
 import org.firstinspires.ftc.teamcode.subsystems.lift;
-import org.firstinspires.ftc.teamcode.subsystems.wrist;
+import org.firstinspires.ftc.teamcode.subsystems.deposit;
 import org.firstinspires.ftc.teamcode.util.MercurialAction;
 import org.firstinspires.ftc.teamcode.util.SilkRoad;
 
@@ -25,8 +25,8 @@ import dev.frozenmilk.mercurial.commands.groups.Parallel;
 @SilkRoad.Attach
 @Mercurial.Attach
 @lift.Attach
-@claw.Attach
-@wrist.Attach
+@intake.Attach
+@deposit.Attach
 @arm.Attach
 @BulkRead.Attach
 public class SafeSample extends OpMode {
@@ -55,7 +55,7 @@ public class SafeSample extends OpMode {
                 new SequentialAction(
                         path3,
                         new SleepAction(1),
-                        new MercurialAction(new Parallel(arm.armUp(), wrist.wristFlat()))
+                        new MercurialAction(new Parallel(arm.armUp(), deposit.wristFlat()))
                         )
                 );
     }
