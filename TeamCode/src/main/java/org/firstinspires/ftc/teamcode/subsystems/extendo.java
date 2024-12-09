@@ -29,8 +29,8 @@ public class extendo implements Subsystem {
     private static DcMotorEx extendoMotor, extendoEncoder;
     private static int liftTarget;
     private static PDFController pid;
-    private static double kP = .004, kD = .0004, kF = 0;
-    private static boolean cancle = false;
+    private static double power;
+    private static double kP = .004, kD = .0006, kF = 0;
     private static int tollerence = 10;
     private extendo() { }
 
@@ -50,31 +50,42 @@ public class extendo implements Subsystem {
     @Override
     public void postUserInitHook(@NonNull Wrapper opMode) {
         HardwareMap hwmap = opMode.getOpMode().hardwareMap;
-        extendoMotor = hwmap.get(DcMotorEx.class, "liftLeft");
-        extendoEncoder = hwmap.get(DcMotorEx.class, "leftFront");
-        setDefaultCommand(update());
+        extendoMotor = hwmap.get(DcMotorEx.class, "extendo");
+        extendoEncoder = hwmap.get(DcMotorEx.class, "rightFront");
+        extendoMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         pid = new PDFController(kP, kD, 0);
     }
 
+    @Override
+    public void postUserStartHook(@NonNull Wrapper opMode){
+        setDefaultCommand(update());
+    }
     public static void setTarget(int target){ liftTarget = target; }
 
     public static int getTarget(){ return liftTarget; }
 
     public static void pidUpdate() {
         pid.setSetPoint(liftTarget);
-        double power = pid.calculate(liftTarget, extendoEncoder.getCurrentPosition()) + kF;
+        power = pid.calculate(liftTarget, extendoEncoder.getCurrentPosition()) + kF;
         extendoMotor.setPower(power);
     }
 
     public static void hold() {
         extendoMotor.setPower(kF);
     }
+    public static double getPower(){
+        return power;
+    }
+
+    public static int getLiftPosition(){
+        return extendoEncoder.getCurrentPosition();
+    }
     public static boolean atTarget() { return (extendoEncoder.getCurrentPosition() >= (getTarget() - tollerence) || extendoEncoder.getCurrentPosition() <= (getTarget() + tollerence)); }
 
 
     @NonNull
     public static Lambda update() {
-        return new Lambda("update the pid")
+        return new Lambda("update the extendo")
                 .addRequirements(INSTANCE)
                 .setExecute(extendo::pidUpdate)
                 .setFinish(() -> false);

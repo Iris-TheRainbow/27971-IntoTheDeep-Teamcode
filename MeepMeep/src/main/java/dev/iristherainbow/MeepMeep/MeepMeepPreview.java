@@ -18,24 +18,40 @@ public class MeepMeepPreview {
                 .build();
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-24, -62.5, Math.toRadians(90)))
-                .strafeTo(new Vector2d(-24, -56))
-                .splineTo(new Vector2d(-51, -57), Math.toRadians(210))
-                        .waitSeconds(3)
-                        .setReversed(true)
-                        .splineTo(new Vector2d(-36, -48), Math.toRadians(0))
-                        .setReversed(false)
-                        .splineTo(new Vector2d( -48, -40), Math.toRadians(90))
+                // start lift raise
+                .strafeToLinearHeading(new Vector2d(-58, -56), Math.toRadians(230))
+                        .waitSeconds(1)
+                        // deposit
+                        // retract lift
+                        .turnTo(Math.toRadians(245))
+                        // extend
+                        // grab
+                        // retract extendo
                         .waitSeconds(2)
-                        .setReversed(true)
-                        .splineTo(new Vector2d(-36, -48), Math.toRadians(0))
-                        .setReversed(false)
-                        .splineTo(new Vector2d(-54, -54), Math.toRadians(225))
+                        // raise lift
+                        .turnTo(Math.toRadians(230))
+                        // deposit
+                        // retract lift
                         .waitSeconds(2)
+                        // extend
+                        .turnTo(Math.toRadians(270))
+                        // grab
+                        // retract extendo
+                        .waitSeconds(2)
+                        // lift
+                        .turnTo(Math.toRadians(230))
+                        // deposit
+                        // retract lift
+                        .waitSeconds(2)
+                        // back up
                         .setReversed(true)
-                        .splineTo(new Vector2d(-36, -48), Math.toRadians(0))
+                        .splineTo(new Vector2d(-40, -48), Math.toRadians(0))
                         .setReversed(false)
-                        .splineTo(new Vector2d(-26, -12), Math.toRadians(0))
-                        .build());
+                        .splineTo(new Vector2d(-24, -12), Math.toRadians(0))
+                        // raise lift to l1
+                        .waitSeconds(1)
+                        .strafeTo(new Vector2d(-24, -12))
+                .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
                 .setDarkMode(true)

@@ -17,14 +17,8 @@ import java.lang.annotation.Target;
 
 import dev.frozenmilk.dairy.core.dependency.Dependency;
 import dev.frozenmilk.dairy.core.dependency.annotation.SingleAnnotation;
-import dev.frozenmilk.dairy.core.util.controller.implementation.DoubleController;
-import dev.frozenmilk.dairy.core.util.supplier.numeric.EnhancedDoubleSupplier;
 import dev.frozenmilk.dairy.core.wrapper.Wrapper;
-import dev.frozenmilk.mercurial.Mercurial;
-import dev.frozenmilk.mercurial.commands.Command;
 import dev.frozenmilk.mercurial.commands.Lambda;
-import dev.frozenmilk.mercurial.commands.groups.CommandGroup;
-import dev.frozenmilk.mercurial.commands.groups.Parallel;
 import dev.frozenmilk.mercurial.subsystems.Subsystem;
 import kotlin.annotation.MustBeDocumented;
 
@@ -33,6 +27,7 @@ public class lift implements Subsystem {
     public static final lift INSTANCE = new lift();
     private static DcMotorEx liftLeft, liftRight, liftEncoder;
     private static int liftTarget;
+    private static double power;
     private static PDFController pid;
     private static double kP = .004, kD = .0004, kF = 0;
     private static int tollerence = 20;
@@ -58,6 +53,7 @@ public class lift implements Subsystem {
         liftRight = hwmap.get(DcMotorEx.class, "liftRight");
         liftEncoder = hwmap.get(DcMotorEx.class, "leftFront");
         liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        liftEncoder.setDirection(DcMotorSimple.Direction.REVERSE);
         setDefaultCommand(update());
         pid = new PDFController(kP, kD, kF);
     }
@@ -68,7 +64,7 @@ public class lift implements Subsystem {
 
     public static void pidUpdate() {
         pid.setSetPoint(liftTarget);
-        double power = pid.calculate(liftTarget, liftEncoder.getCurrentPosition());
+        power = pid.calculate(liftTarget, liftEncoder.getCurrentPosition());
         liftRight.setPower(power);
         liftLeft.setPower(power);
     }
@@ -77,7 +73,13 @@ public class lift implements Subsystem {
         liftRight.setPower(kF);
         liftLeft.setPower(kF);
     }
+    public static double getPower(){
+        return power;
+    }
 
+    public static int getLiftPosition(){
+        return liftEncoder.getCurrentPosition();
+    }
     public static boolean atTarget() { return (liftEncoder.getCurrentPosition() >= (getTarget() - tollerence) || liftEncoder.getCurrentPosition() <= (getTarget() + tollerence)); }
 
 

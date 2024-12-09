@@ -11,7 +11,6 @@ import org.firstinspires.ftc.teamcode.subsystems.deposit;
 import org.firstinspires.ftc.teamcode.util.LoopTimes;
 
 
-import dev.frozenmilk.dairy.core.util.controller.calculation.pid.DoubleComponent;
 import dev.frozenmilk.dairy.core.util.features.BulkRead;
 import dev.frozenmilk.mercurial.Mercurial;
 import dev.frozenmilk.mercurial.commands.groups.Advancing;
@@ -32,19 +31,26 @@ public class TeleOp extends OpMode {
     @Override
     public void init() {
         //lift
-        Mercurial.gamepad1().y().onTrue(new Sequential(deposit.closeClaw(), intake.openClaw(), new Parallel(lift.goTo(4000), deposit.wristDeposit(), arm.armUp())));
+        Mercurial.gamepad1().y().onTrue(new Sequential(deposit.closeClaw(), intake.openClaw(), new Parallel(lift.goTo(3500), deposit.wristDeposit(), arm.armUp())));
         //retract extendo and transfer
-        Mercurial.gamepad1().a().onTrue(new Sequential(new Parallel(extendo.goTo(0), lift.goTo(0), intake.wristTransfer(), deposit.wristTransfer(), deposit.openClaw()), deposit.closeClaw(), intake.openClaw()));
+        Mercurial.gamepad1().a().onTrue(new Sequential(new Parallel(extendo.goTo(0), lift.goTo(0), intake.wristTransfer(), deposit.wristTransfer(), deposit.openClaw(), arm.armWait()), arm.armTransfer(), deposit.closeClaw(), intake.openClaw(), new Parallel(arm.armUp(), deposit.wristDeposit())));
         //extend
-        Mercurial.gamepad1().b().onTrue(new Sequential(new Parallel(extendo.goTo(600), lift.goTo(0), arm.armStow(), deposit.wristDeposit(), intake.openClaw()), intake.wristIntake()));
+        Mercurial.gamepad1().b().onTrue(new Sequential(new Parallel(extendo.goTo(500), lift.goTo(0), arm.armTransfer(), deposit.wristDeposit(), intake.openClaw()), intake.wristIntake()));
+        //toggle for wrist
         Mercurial.gamepad1().leftBumper().onTrue(new Advancing(intake.wristTransfer(), intake.wristIntake()));
-        Mercurial.gamepad1().rightBumper().onTrue(new Advancing(new Parallel(intake.openClaw(), deposit.openClaw()), new Parallel(intake.closeClaw(), deposit.closeClaw())));
-        Mercurial.gamepad1().dpadUp().onTrue(new Parallel(extendo.goTo(0), lift.goTo(5000), intake.wristTransfer(), deposit.wristTransfer(), arm.armStow()));
+        //toggle for claw
+        Mercurial.gamepad1().rightBumper().onTrue(new Parallel(intake.toggleClaw(), deposit.toggleClaw()));
+        //hang extend
+        Mercurial.gamepad1().dpadUp().onTrue(new Parallel(extendo.goTo(0), lift.goTo(3500), intake.wristTransfer(), deposit.wristTransfer(), arm.armTransfer()));
+        //hang retract
         Mercurial.gamepad1().dpadDown().onTrue(lift.goTo(0));
     }
 
     @Override
     public void loop() {
-
+        telemetry.addData("Lift Pos", lift.getLiftPosition());
+        telemetry.addData("lift power", lift.getPower());
+        telemetry.addData("Extendo Pos", extendo.getLiftPosition());
+        telemetry.addData("extendo power", extendo.getPower());
     }
 }

@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.StateMachine;
 import org.firstinspires.ftc.teamcode.util.Waiter;
 
 import java.lang.annotation.ElementType;
@@ -40,12 +41,15 @@ public class arm implements Subsystem {
     @Override
     public void setDependency(@NonNull Dependency<?> dependency) { this.dependency = dependency; }
 
+
+
     @Override
     public void postUserInitHook(@NonNull Wrapper opMode) {
         HardwareMap hwmap = opMode.getOpMode().hardwareMap;
         leftArm = hwmap.get(Servo.class, "armLeft");
         rightArm = hwmap.get(Servo.class, "armRight");
         leftArm.setDirection(Servo.Direction.REVERSE);
+        waiter = new Waiter();
     }
 
     public static void setPosition(double position) {
@@ -54,15 +58,26 @@ public class arm implements Subsystem {
     }
 
     @NonNull
-    public static Lambda armStow() {
+    public static Lambda armTransfer() {
         return new Lambda("arm stow")
                 .addRequirements(INSTANCE)
                 .setInit(() -> {
-                    setPosition(0);
+                    setPosition(.04);
+                    waiter.start(200);
+                })
+                .setFinish(() -> waiter.isDone());
+    }
+    @NonNull
+    public static Lambda armWait() {
+        return new Lambda("arm stow")
+                .addRequirements(INSTANCE)
+                .setInit(() -> {
+                    setPosition(.15);
                     waiter.start(500);
                 })
                 .setFinish(() -> waiter.isDone());
     }
+    
 
     @NonNull
     public static Lambda armOut(){
@@ -80,7 +95,7 @@ public class arm implements Subsystem {
         return new Lambda("arm up")
                 .addRequirements(INSTANCE)
                 .setInit(() -> {
-                    setPosition(.45);
+                    setPosition(.28);
                     waiter.start(500);
                 })
                 .setFinish(() -> waiter.isDone());

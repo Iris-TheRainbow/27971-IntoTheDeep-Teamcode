@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+
 import androidx.annotation.NonNull;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -17,6 +18,7 @@ import dev.frozenmilk.dairy.core.dependency.Dependency;
 import dev.frozenmilk.dairy.core.dependency.annotation.SingleAnnotation;
 import dev.frozenmilk.dairy.core.wrapper.Wrapper;
 import dev.frozenmilk.mercurial.commands.Lambda;
+import dev.frozenmilk.mercurial.commands.util.StateMachine;
 import dev.frozenmilk.mercurial.subsystems.Subsystem;
 import kotlin.annotation.MustBeDocumented;
 
@@ -48,34 +50,53 @@ public class deposit implements Subsystem {
         this.dependency = dependency;
     }
 
+    private static StateMachine<ClawState> clawStates = new StateMachine<>(ClawState.CLOSED)
+            .withState(ClawState.CLOSED, (stateRef, name) -> closeClaw())
+            .withState(ClawState.OPEN, (stateRef, name) -> openClaw());
+
     @Override
     public void postUserInitHook(@NonNull Wrapper opMode) {
         HardwareMap hwmap = opMode.getOpMode().hardwareMap;
-        leftWrist = hwmap.get(Servo.class, "wristLeft");
-        rightWrist = hwmap.get(Servo.class, "wristRight");
+        leftWrist = hwmap.get(Servo.class, "depositWristLeft");
+        rightWrist = hwmap.get(Servo.class, "depositWristRight");
         clawServo = hwmap.get(Servo.class, "depositClaw");
-        leftWrist.setDirection(Servo.Direction.REVERSE);
+        rightWrist.setDirection(Servo.Direction.REVERSE);
+        waiter = new Waiter();
     }
     @Override
-    public void postUserStartHook(@NonNull Wrapper opMode){ setPosition(.6); }
+    public void postUserStartHook(@NonNull Wrapper opMode){ setPosition(.85); }
 
     public static void setPosition(double position) {
         leftWrist.setPosition(position);
         rightWrist.setPosition(position);
     }
 
-    private static void close(){ clawServo.setPosition(0); }
-    private static void open(){ clawServo.setPosition(.2); }
+    private static void close(){ clawServo.setPosition(1); clawStates.setState(ClawState.CLOSED);}
+    private static void open(){ clawServo.setPosition(.85); clawStates.setState(ClawState.OPEN);}
 
     @NonNull
     public static Lambda wristDeposit() {
         return new Lambda("wrist flat")
                 .addRequirements(INSTANCE)
                 .setInit(() -> {
-                    setPosition(.3);
+                    setPosition(.6);
                     waiter.start(300);
                 })
                 .setFinish(() -> waiter.isDone());
+    }
+    @NonNull
+    public static Lambda toggleClaw(){
+        return new Lambda("claw toggle")
+                .setInit(() -> {
+                    switch (clawStates.getState()){
+                        case OPEN:
+                            clawStates.schedule(ClawState.CLOSED);
+                            break;
+                        case CLOSED:
+                            clawStates.schedule(ClawState.OPEN);
+                            break;
+                    }
+                });
     }
 
     @NonNull
@@ -83,7 +104,7 @@ public class deposit implements Subsystem {
         return new Lambda("wrist down")
                 .addRequirements(INSTANCE)
                 .setInit(() -> {
-                    setPosition(.6);
+                    setPosition(.02);
                     waiter.start(300);
                 })
                 .setFinish(() -> waiter.isDone());
@@ -110,5 +131,9 @@ public class deposit implements Subsystem {
                     waiter.start(200);
                 })
                 .setFinish(() -> waiter.isDone());
+    }
+    private enum ClawState{
+        OPEN,
+        CLOSED
     }
 }
