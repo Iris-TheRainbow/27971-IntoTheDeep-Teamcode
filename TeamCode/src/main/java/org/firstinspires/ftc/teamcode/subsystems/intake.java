@@ -66,25 +66,37 @@ public class intake implements Subsystem {
 
     @Override
     public void postUserStartHook(@NonNull Wrapper opMode){
-        setDefaultCommand(wristRotate());
+        setDefaultCommand(autoWrist());
         clawServo.setPosition(0);
     }
     public static void setWristPosition(double position) {
         leftWrist.setPosition(position);
         rightWrist.setPosition(position);
     }
-    private static void close(){ clawServo.setPosition(0); clawStates.setState(ClawState.CLOSED);
+    private static void close(){ clawServo.setPosition(.1); clawStates.setState(ClawState.CLOSED);
     }
     private static void open(){
-        clawServo.setPosition(.2); clawStates.setState(ClawState.OPEN); }
+        clawServo.setPosition(.4); clawStates.setState(ClawState.OPEN); }
 
     private static void setRotation(){
         rotation.setPosition(.5 + ((-Mercurial.gamepad1().leftTrigger().state() + Mercurial.gamepad1().rightTrigger().state()) * .5));
     }
+    private static void setWristRotation(double pos){
+        rotation.setPosition(pos);
+    }
     @NonNull
-    public static Lambda wristRotate(){
+    public static Lambda wristRotate(double pos){
         return new Lambda("rotate the wrist")
-                .setExecute(intake::setRotation);
+                .setRequirements(INSTANCE)
+                .setExecute(() -> { setWristRotation(pos);})
+                .setInterruptible(true);
+    }
+    @NonNull
+    public static Lambda autoWrist(){
+        return new Lambda("rotate the wrist")
+                .setRequirements(INSTANCE)
+                .setExecute(intake::setRotation)
+                .setInterruptible(true);
     }
 
     @NonNull

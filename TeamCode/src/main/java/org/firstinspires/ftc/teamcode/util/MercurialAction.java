@@ -20,6 +20,7 @@ public class MercurialAction implements Action {
             command.schedule();
             this.initialized = true;
         }
+        packet.addLine("Scheduled " + command.toString());
         final boolean finished = initialized && !Mercurial.isScheduled(command);
         if (finished) this.initialized = false;
         return finished;

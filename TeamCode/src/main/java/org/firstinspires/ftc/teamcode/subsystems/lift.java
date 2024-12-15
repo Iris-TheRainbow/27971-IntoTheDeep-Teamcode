@@ -64,7 +64,7 @@ public class lift implements Subsystem {
 
     public static void pidUpdate() {
         pid.setSetPoint(liftTarget);
-        power = pid.calculate(liftTarget, liftEncoder.getCurrentPosition());
+        power = pid.calculate(liftTarget, -liftEncoder.getCurrentPosition());
         liftRight.setPower(power);
         liftLeft.setPower(power);
     }

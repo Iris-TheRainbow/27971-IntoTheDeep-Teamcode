@@ -34,6 +34,7 @@ public class drive implements Subsystem {
         private static DcMotorEx leftFront, leftBack, rightFront, rightBack;
         private static SparkFunOTOSCorrected otos;
         private static SparkFunOTOS.Pose2D pose;
+        private static double turnNerf = 1;
 
         private drive() { }
 
@@ -79,7 +80,7 @@ public class drive implements Subsystem {
                 // read the gamepads
                 double rightX = Mercurial.gamepad1().leftStickX().state();
                 double rightY = Mercurial.gamepad1().leftStickY().state();
-                double turn = Mercurial.gamepad1().rightStickX().state();
+                double turn = Mercurial.gamepad1().rightStickX().state() * turnNerf;
 
                 double heading = 0; //otos.getPosition().h;
                 // Do the kinematics math
@@ -99,6 +100,11 @@ public class drive implements Subsystem {
 
         private static void resetHeading(){
                 otos.setPosition(new SparkFunOTOS.Pose2D(0, 0, 0));
+        }
+        @NonNull
+        public static Lambda nerfDrive(double multiplier){
+                return new Lambda("nerf turn speed")
+                        .setExecute(() -> {turnNerf = multiplier; });
         }
 
         @NonNull

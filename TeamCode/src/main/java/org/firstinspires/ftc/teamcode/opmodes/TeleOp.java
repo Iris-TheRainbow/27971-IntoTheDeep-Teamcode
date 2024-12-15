@@ -33,9 +33,9 @@ public class TeleOp extends OpMode {
         //lift
         Mercurial.gamepad1().y().onTrue(new Sequential(deposit.closeClaw(), intake.openClaw(), new Parallel(lift.goTo(3500), deposit.wristDeposit(), arm.armUp())));
         //retract extendo and transfer
-        Mercurial.gamepad1().a().onTrue(new Sequential(new Parallel(extendo.goTo(0), lift.goTo(0), intake.wristTransfer(), deposit.wristTransfer(), deposit.openClaw(), arm.armWait()), arm.armTransfer(), deposit.closeClaw(), intake.openClaw(), new Parallel(arm.armUp(), deposit.wristDeposit())));
+        Mercurial.gamepad1().a().onTrue(new Sequential(drive.nerfDrive(1), new Parallel(extendo.goTo(0), lift.goTo(0), intake.wristTransfer(), deposit.wristTransfer(), deposit.openClaw(), arm.armWait()), arm.armTransfer(), deposit.closeClaw(), intake.openClaw(), new Parallel(arm.armUp(), deposit.wristDeposit())));
         //extend
-        Mercurial.gamepad1().b().onTrue(new Sequential(new Parallel(extendo.goTo(500), lift.goTo(0), arm.armTransfer(), deposit.wristDeposit(), intake.openClaw()), intake.wristIntake()));
+        Mercurial.gamepad1().b().onTrue(new Sequential(drive.nerfDrive(.5), new Parallel(extendo.goTo(600), lift.goTo(0), arm.armTransfer(), deposit.wristDeposit(), intake.openClaw()), intake.wristIntake()));
         //toggle for wrist
         Mercurial.gamepad1().leftBumper().onTrue(new Advancing(intake.wristTransfer(), intake.wristIntake()));
         //toggle for claw

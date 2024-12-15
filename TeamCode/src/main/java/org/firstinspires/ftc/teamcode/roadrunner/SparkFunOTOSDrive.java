@@ -5,6 +5,7 @@ package org.firstinspires.ftc.teamcode.roadrunner;
 import static com.acmerobotics.roadrunner.ftc.OTOSKt.OTOSPoseToRRPose;
 import static com.acmerobotics.roadrunner.ftc.OTOSKt.RRPoseToOTOSPose;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
@@ -24,8 +25,10 @@ import org.firstinspires.ftc.teamcode.roadrunner.messages.PoseMessage;
  * Portions of this code made and released under the MIT License by SparkFun
  * Unless otherwise noted, comments are from SparkFun
  */
+@Config
 public class SparkFunOTOSDrive extends MecanumDrive {
     public static class Params {
+        public double OtosOffsetX = -4.085, OtosOffsetY = -4.4335, OtosOffsetH = .0024;
         // Assuming you've mounted your sensor to a robot and it's not centered,
         // you can specify the offset for the sensor relative to the center of the
         // robot. The units default to inches and degrees, but if you want to use
@@ -39,8 +42,7 @@ public class SparkFunOTOSDrive extends MecanumDrive {
         // tweaked slightly to compensate for imperfect mounting (eg. 1.3 degrees).
 
         // RR localizer note: These units are inches and radians.
-        public SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(3.3401, 4.3854, .0024);
-
+        public SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(OtosOffsetX, OtosOffsetY, OtosOffsetH);
         // Here we can set the linear and angular scalars, which can compensate for
         // scaling issues with the sensor measurements. Note that as of firmware
         // version 1.0, these values will be lost after a power cycle, so you will
@@ -57,8 +59,8 @@ public class SparkFunOTOSDrive extends MecanumDrive {
         // multiple speeds to get an average, then set the linear scalar to the
         // inverse of the error. For example, if you move the robot 100 inches and
         // the sensor reports 103 inches, set the linear scalar to 100/103 = 0.971
-        public double linearScalar = .98375404;
-        public double angularScalar = .9956;
+        public double linearScalar = 1.02;
+        public double angularScalar = .9967;
     }
 
     public static SparkFunOTOSDrive.Params PARAMS = new SparkFunOTOSDrive.Params();
