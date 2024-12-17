@@ -45,6 +45,7 @@ import org.firstinspires.ftc.teamcode.roadrunner.messages.DriveCommandMessage;
 import org.firstinspires.ftc.teamcode.roadrunner.messages.MecanumCommandMessage;
 import org.firstinspires.ftc.teamcode.roadrunner.messages.MecanumLocalizerInputsMessage;
 import org.firstinspires.ftc.teamcode.roadrunner.messages.PoseMessage;
+import org.firstinspires.ftc.teamcode.subsystems.Wavedash;
 
 import java.lang.Math;
 import java.util.Arrays;
@@ -53,7 +54,11 @@ import java.util.List;
 
 @Config
 public class MecanumDrive {
-    public Pose2dDual<Time> lastTxWorldTarget;
+    private Pose2dDual<Time> lastTxWorldTarget;
+    private boolean driveDone = true;
+    private TelemetryPacket lastPacket;
+    private Canvas lastCanvas;
+
     public static class Params {
         // IMU orientation
         // TODO: fill in these values based on
@@ -65,8 +70,8 @@ public class MecanumDrive {
 
         // drive model parameters
         public double inPerTick = 1; // SparkFun OTOS Note: you can probably leave this at 1
-        public double lateralInPerTick = 0.5964759321699452;
-        public double trackWidthTicks = 12.952111361330113;
+        public double lateralInPerTick = .65;
+        public double trackWidthTicks = 13.5;
 
         // feedforward parameters (in tick units)
         public double kS = .85;
@@ -74,22 +79,22 @@ public class MecanumDrive {
         public double kA = .017;
 
         // path profile parameters (in inches)
-        public double maxWheelVel = 35;
-        public double minProfileAccel = -25;
-        public double maxProfileAccel = 25;
+        public double maxWheelVel = 75;
+        public double minProfileAccel = -45;
+        public double maxProfileAccel = 45;
 
         // turn profile parameters (in radians)
-        public double maxAngVel = .95 * Math.PI; // shared with path
-        public double maxAngAccel = .85 * Math.PI;
+        public double maxAngVel = 1.25 * Math.PI; // shared with path
+        public double maxAngAccel = 1.25 * Math.PI;
 
         // path controller gains
         public double axialGain = 7;
-        public double lateralGain = 5;
-        public double headingGain = 5; // shared with turn
+        public double lateralGain = 6;
+        public double headingGain = 9; // shared with turn
 
-        public double axialVelGain = .5;
-        public double lateralVelGain = 0.0;
-        public double headingVelGain = .25; // shared with turn
+        public double axialVelGain = 0;
+        public double lateralVelGain = 0;
+        public double headingVelGain = 0; // shared with turn
     }
 
     public static Params PARAMS = new Params();
@@ -255,7 +260,7 @@ public class MecanumDrive {
         rightFront.setPower(wheelVels.rightFront.get(0) / maxPowerMag);
     }
 
-    public void goToTarget(Pose2dDual<Time> txWorldTarget){
+    public void goToTarget(Pose2dDual<Time> txWorldTarget, Canvas canvas){
         PoseVelocity2d robotVelRobot = updatePoseEstimate();
         Pose2d error = txWorldTarget.value().minusExp(pose);
         PoseVelocity2dDual<Time> command = new HolonomicController(
@@ -281,6 +286,14 @@ public class MecanumDrive {
         leftBack.setPower(leftBackPower);
         rightBack.setPower(rightBackPower);
         rightFront.setPower(rightFrontPower);
+
+        drawPoseHistory(canvas);
+
+        canvas.setStroke("#4CAF50");
+        Drawing.drawRobot(canvas, txWorldTarget.value());
+
+        canvas.setStroke("#3F51B5");
+        Drawing.drawRobot(canvas, pose);
     }
     public Pose2dDual<Time> getLastTarget(){
         return lastTxWorldTarget;
@@ -392,15 +405,17 @@ public class MecanumDrive {
 
         public FollowTrajectoryAction(TimeTrajectory t) {
             traj = new FollowTrajectory(t);
-
         }
 
         @Override
         public boolean run(@NonNull TelemetryPacket p) {
             if (traj.isFinished()){
                 traj.end();
+                driveDone = true;
                 return false;
             }
+            driveDone = false;
+            Wavedash.DriveBusy().schedule();
             traj.execute(p);
             return true;
         }
@@ -494,8 +509,11 @@ public class MecanumDrive {
         public boolean run(@NonNull TelemetryPacket p) {
             if (turn.isFinished()){
                 turn.end();
+                driveDone = true;
                 return false;
             }
+            driveDone = false;
+            Wavedash.DriveBusy().schedule();
             turn.execute(p);
             return true;
         }
@@ -535,6 +553,9 @@ public class MecanumDrive {
         c.setStrokeWidth(1);
         c.setStroke("#3F51B5");
         c.strokePolyline(xPoints, yPoints);
+    }
+    public boolean isDriveDone() {
+        return driveDone;
     }
 
     public TrajectoryActionBuilder actionBuilder(Pose2d beginPose) {
