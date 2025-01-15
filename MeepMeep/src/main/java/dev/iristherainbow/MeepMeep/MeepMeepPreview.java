@@ -40,6 +40,7 @@ public class MeepMeepPreview {
                 .setReversed(true)
                 .setTangent(Math.toRadians(45))
                 .splineToLinearHeading(new Pose2d(-24, -9, Math.toRadians(0)), Math.toRadians(0))
+                        .turnTo
                 .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)

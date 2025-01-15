@@ -15,6 +15,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import dev.frozenmilk.dairy.cachinghardware.CachingDcMotorEx;
 import dev.frozenmilk.dairy.core.dependency.Dependency;
 import dev.frozenmilk.dairy.core.dependency.annotation.SingleAnnotation;
 import dev.frozenmilk.dairy.core.wrapper.Wrapper;
@@ -49,8 +50,8 @@ public class lift implements Subsystem {
     @Override
     public void postUserInitHook(@NonNull Wrapper opMode) {
         HardwareMap hwmap = opMode.getOpMode().hardwareMap;
-        liftLeft = hwmap.get(DcMotorEx.class, "liftLeft");
-        liftRight = hwmap.get(DcMotorEx.class, "liftRight");
+        liftLeft = new CachingDcMotorEx(hwmap.get(DcMotorEx.class, "liftLeft"));
+        liftRight = new CachingDcMotorEx(hwmap.get(DcMotorEx.class, "liftRight"));
         liftEncoder = hwmap.get(DcMotorEx.class, "leftFront");
         liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         liftEncoder.setDirection(DcMotorSimple.Direction.REVERSE);

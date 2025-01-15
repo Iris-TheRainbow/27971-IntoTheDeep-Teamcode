@@ -19,6 +19,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import dev.frozenmilk.dairy.cachinghardware.CachingDcMotorEx;
 import dev.frozenmilk.dairy.core.FeatureRegistrar;
 import dev.frozenmilk.dairy.core.dependency.Dependency;
 import dev.frozenmilk.dairy.core.dependency.annotation.SingleAnnotation;
@@ -55,10 +56,10 @@ public class drive implements Subsystem {
         @Override
         public void postUserInitHook(@NonNull Wrapper opMode) {
                 HardwareMap hwmap = opMode.getOpMode().hardwareMap;
-                leftBack = hwmap.get(DcMotorEx.class, "leftBack");
-                leftFront = hwmap.get(DcMotorEx.class, "leftFront");
-                rightBack = hwmap.get(DcMotorEx.class, "rightBack");
-                rightFront = hwmap.get(DcMotorEx.class, "rightFront");
+                leftBack = new CachingDcMotorEx(hwmap.get(DcMotorEx.class, "leftBack"));
+                leftFront = new CachingDcMotorEx(hwmap.get(DcMotorEx.class, "leftFront"));
+                rightBack = new CachingDcMotorEx(hwmap.get(DcMotorEx.class, "rightBack"));
+                rightFront = new CachingDcMotorEx(hwmap.get(DcMotorEx.class, "rightFront"));
                 otos = hwmap.get(SparkFunOTOSCorrected.class, "otos");
                 System.out.println(otos.setLinearScalar(PARAMS.linearScalar));
                 System.out.println(otos.setAngularScalar(PARAMS.angularScalar));

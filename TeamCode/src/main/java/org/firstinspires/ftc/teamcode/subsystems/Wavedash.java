@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -11,6 +12,7 @@ import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ThreadPool;
 
 import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
 import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
@@ -23,6 +25,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.Callable;
+
+import java.util.concurrent.Future;
 
 import dev.frozenmilk.dairy.core.dependency.Dependency;
 import dev.frozenmilk.dairy.core.dependency.annotation.SingleAnnotation;
@@ -93,7 +98,7 @@ public class Wavedash implements Subsystem {
     }
 
     private static MecanumDrive GenerateRRDrive(HardwareMap hwmap){
-        return new MecanumDrive(hwmap, Wavedash.initialPose);
+        return new SparkFunOTOSDrive(hwmap, Wavedash.initialPose);
     }
 
     public static TrajectoryActionBuilder actionBuilder(Pose2d initialPose){
@@ -115,10 +120,64 @@ public class Wavedash implements Subsystem {
     }
 
     @NonNull
+    public static Lambda PIDToPoint(Pose2d pose, int translationalAccuracy, double headingAccuracy) {
+        Pose2dDual<Time> target = Pose2dDual.constant(pose, 3);
+        return new Lambda("PID to last set target")
+                .addRequirements(INSTANCE)
+                .setExecute(() -> {
+                    TelemetryPacket packet = new TelemetryPacket();
+                    RRDrive.goToTarget(target, packet.fieldOverlay());
+                    dash.sendTelemetryPacket(packet);
+                })
+                .setFinish(() -> {
+                    double translationalError = target.value().minusExp(RRDrive.pose).position.norm();
+                    double headingError = Math.abs(Math.toDegrees(target.value().minusExp(RRDrive.pose).heading.toDouble()));
+                    return  translationalError < translationalAccuracy && headingError <  headingAccuracy;
+                });
+    }
+
+    @NonNull
+    public static Lambda PIDToPoint(Pose2d pose){
+        return PIDToPoint(pose, 1, 3);
+    }
+
+    @NonNull
     public static Lambda DriveBusy(){
         return new Lambda("RR is doing stuff")
                 .addRequirements(INSTANCE)
                 .setFinish(() -> RRDrive.isDriveDone());
+    }
+
+     class ThreadedActionBuilder{
+        private ActionBuilderWorker worker;
+        private Future<Action> trajFuture;
+        private class ActionBuilderWorker implements Callable<Action>  {
+            private TrajectoryActionBuilder tab;
+            public ActionBuilderWorker(TrajectoryActionBuilder tab){
+                this.tab = tab;
+            }
+            @Override
+            public Action call() throws Exception {
+                return tab.build();
+            }
+
+        }
+        public ThreadedActionBuilder(TrajectoryActionBuilder tab){
+            worker = new ActionBuilderWorker(tab);
+            trajFuture = ThreadPool.getDefault().submit(worker);
+        }
+
+        public boolean isDone(){
+            return trajFuture.isDone();
+        }
+
+        public Action get() {
+            try {
+                return trajFuture.get();
+            } catch (Exception e){
+                return null;
+            }
+        }
     }
 
 }

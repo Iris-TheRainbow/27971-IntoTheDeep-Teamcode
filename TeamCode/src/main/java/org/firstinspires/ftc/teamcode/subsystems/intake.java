@@ -14,6 +14,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import dev.frozenmilk.dairy.cachinghardware.CachingServo;
 import dev.frozenmilk.dairy.core.dependency.Dependency;
 import dev.frozenmilk.dairy.core.dependency.annotation.SingleAnnotation;
 import dev.frozenmilk.dairy.core.wrapper.Wrapper;
@@ -48,9 +49,9 @@ public class intake implements Subsystem {
     @Override
     public void postUserInitHook(@NonNull Wrapper opMode) {
         HardwareMap hwmap = opMode.getOpMode().hardwareMap;
-        clawServo = hwmap.get(Servo.class, "intakeClaw");
-        leftWrist = hwmap.get(Servo.class, "intakeWristLeft");
-        rightWrist = hwmap.get(Servo.class, "intakeWristRight");
+        clawServo = new CachingServo(hwmap.get(Servo.class, "intakeClaw"));
+        leftWrist = new CachingServo(hwmap.get(Servo.class, "intakeWristLeft"));
+        rightWrist = new CachingServo(hwmap.get(Servo.class, "intakeWristRight"));
         leftWrist.setDirection(Servo.Direction.REVERSE);
         rotation = hwmap.get(Servo.class, "intakeRotate");
         rotation.setDirection(Servo.Direction.REVERSE);

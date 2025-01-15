@@ -15,6 +15,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import dev.frozenmilk.dairy.cachinghardware.CachingDcMotorEx;
 import dev.frozenmilk.dairy.core.dependency.Dependency;
 import dev.frozenmilk.dairy.core.dependency.annotation.SingleAnnotation;
 import dev.frozenmilk.dairy.core.wrapper.Wrapper;
@@ -50,7 +51,7 @@ public class extendo implements Subsystem {
     @Override
     public void postUserInitHook(@NonNull Wrapper opMode) {
         HardwareMap hwmap = opMode.getOpMode().hardwareMap;
-        extendoMotor = hwmap.get(DcMotorEx.class, "extendo");
+        extendoMotor = new CachingDcMotorEx(hwmap.get(DcMotorEx.class, "extendo"));
         extendoEncoder = hwmap.get(DcMotorEx.class, "rightFront");
         extendoMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         pid = new PDFController(kP, kD, 0);
@@ -92,9 +93,9 @@ public class extendo implements Subsystem {
     }
 
     @NonNull
-    public static Lambda goTo(int to){
+    public static Lambda goTo(int target){
         return new Lambda("set pid target")
-                .setExecute(() -> setTarget(to))
+                .setExecute(() -> setTarget(target))
                 .setFinish(extendo::atTarget);
     }
 
