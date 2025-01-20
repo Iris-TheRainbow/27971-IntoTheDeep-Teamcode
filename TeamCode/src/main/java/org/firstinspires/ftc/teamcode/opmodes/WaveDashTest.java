@@ -41,13 +41,13 @@ public class WaveDashTest extends OpMode {
     @Override
     public void init() {
         driveAction = Wavedash.actionBuilder(initialPose)
-                .afterDisp(0, new MercurialAction(new Parallel(lift.goTo(3500), deposit.closeClaw(), arm.armUp(), deposit.wristDeposit())))
+                .afterDisp(0, new MercurialAction(new Parallel(lift.goTo(2000), deposit.closeClaw(), arm.armUp(), deposit.wristDeposit())))
                 .splineTo(new Vector2d(-58, -56), Math.toRadians(230))
                 .stopAndAdd(new MercurialAction(new Parallel(deposit.openClaw())))
                 .waitSeconds(.2)
                 .setReversed(true)
                 .splineTo(new Vector2d(-55, -50.5),  Math.toRadians(259-180), new TranslationalVelConstraint(5))
-                .stopAndAdd(new MercurialAction( new Sequential(new Parallel(lift.goTo(0), extendo.goTo(500), intake.wristIntake(), intake.openClaw(), lift.goTo(0)), new Wait(.75), intake.closeClaw(), new Wait(.25), new Parallel(extendo.goTo(0), lift.goTo(0), intake.wristTransfer(), deposit.wristTransfer(), deposit.openClaw(), arm.armWait()), arm.armTransfer(), deposit.closeClaw(), intake.openClaw(), new Parallel(arm.armUp(), deposit.wristDeposit()), new Parallel(lift.goTo(3500), deposit.closeClaw(), arm.armUp()))))
+                .stopAndAdd(new MercurialAction( new Sequential(new Parallel(lift.goTo(0), extendo.goTo(500), intake.wristIntake(), intake.openClaw(), lift.goTo(0)), new Wait(.75), intake.closeClaw(), new Wait(.25), new Parallel(extendo.goTo(0), lift.goTo(0), intake.wristTransfer(), deposit.wristTransfer(), deposit.openClaw(), arm.armWait()), arm.armTransfer(), deposit.closeClaw(), intake.openClaw(), new Parallel(arm.armUp(), deposit.wristDeposit()), new Parallel(lift.goTo(2000), deposit.closeClaw(), arm.armUp()))))
                 .build();
     }
     @Override

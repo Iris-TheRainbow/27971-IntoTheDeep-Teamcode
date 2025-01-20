@@ -44,7 +44,7 @@ public class sampleauto extends OpMode {
     public void init() {
         drive = new SparkFunOTOSDrive(hardwareMap, initialPose);
         driveAction = drive.actionBuilder(initialPose)
-                .afterDisp(0, new MercurialAction(new Parallel(lift.goTo(3500), deposit.closeClaw(), arm.armUp(), deposit.wristDeposit())))
+                .afterDisp(0, new MercurialAction(new Parallel(lift.goTo(2000), deposit.closeClaw(), arm.armUp(), deposit.wristDeposit())))
                 .splineTo(new Vector2d(-58, -56), Math.toRadians(230))
                 .stopAndAdd(new MercurialAction(new Parallel(deposit.openClaw())))
                 .waitSeconds(.5)
@@ -53,7 +53,7 @@ public class sampleauto extends OpMode {
                 .splineTo(new Vector2d(-55, -51),  Math.toRadians(259-180), new TranslationalVelConstraint(5))
                 .afterTime(0, new MercurialAction( new Parallel(extendo.goTo(500), intake.wristIntake(), intake.openClaw())))
                 .afterTime(2, new MercurialAction(new Parallel(intake.closeClaw())))
-                .afterTime(2.5, new MercurialAction(new Sequential(new Parallel(extendo.goTo(0), lift.goTo(0), intake.wristTransfer(), deposit.wristTransfer(), deposit.openClaw(), arm.armWait()), arm.armTransfer(), deposit.closeClaw(), intake.openClaw(), new Parallel(arm.armUp(), deposit.wristDeposit()), new Parallel(lift.goTo(3500), deposit.closeClaw(), arm.armUp()))))
+                .afterTime(2.5, new MercurialAction(new Sequential(new Parallel(extendo.goTo(0), lift.goTo(0), intake.wristTransfer(), deposit.wristTransfer(), deposit.openClaw(), arm.armWait()), arm.armTransfer(), deposit.closeClaw(), intake.openClaw(), new Parallel(arm.armUp(), deposit.wristDeposit()), new Parallel(lift.goTo(2000), deposit.closeClaw(), arm.armUp()))))
                 .waitSeconds(5)
                 .splineTo(new Vector2d(-58, -54), Math.toRadians(230))
                 .waitSeconds(.5)
@@ -62,7 +62,7 @@ public class sampleauto extends OpMode {
                 .strafeToLinearHeading(new Vector2d(-55, -51),  Math.toRadians(282), new TranslationalVelConstraint(5))
                 .afterTime(0, new MercurialAction( new Parallel(extendo.goTo(500), intake.wristIntake(), intake.openClaw(), lift.goTo(0))))
                 .afterTime(2, new MercurialAction(new Parallel(intake.closeClaw())))
-                .afterTime(2.5, new MercurialAction(new Sequential(new Parallel(extendo.goTo(0), lift.goTo(0), intake.wristTransfer(), deposit.wristTransfer(), deposit.openClaw(), arm.armWait()), arm.armTransfer(), deposit.closeClaw(), intake.openClaw(), new Parallel(arm.armUp(), deposit.wristDeposit()), new Parallel(lift.goTo(3500), deposit.closeClaw(), arm.armUp()))))
+                .afterTime(2.5, new MercurialAction(new Sequential(new Parallel(extendo.goTo(0), lift.goTo(0), intake.wristTransfer(), deposit.wristTransfer(), deposit.openClaw(), arm.armWait()), arm.armTransfer(), deposit.closeClaw(), intake.openClaw(), new Parallel(arm.armUp(), deposit.wristDeposit()), new Parallel(lift.goTo(2000), deposit.closeClaw(), arm.armUp()))))
                 .waitSeconds(5)
                 .splineTo(new Vector2d(-58, -54), Math.toRadians(230))
                 .waitSeconds(.5)

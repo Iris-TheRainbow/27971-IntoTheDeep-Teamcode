@@ -52,7 +52,7 @@ public class intake implements Subsystem {
         clawServo = new CachingServo(hwmap.get(Servo.class, "intakeClaw"));
         leftWrist = new CachingServo(hwmap.get(Servo.class, "intakeWristLeft"));
         rightWrist = new CachingServo(hwmap.get(Servo.class, "intakeWristRight"));
-        leftWrist.setDirection(Servo.Direction.REVERSE);
+        rightWrist.setDirection(Servo.Direction.REVERSE);
         rotation = hwmap.get(Servo.class, "intakeRotate");
         rotation.setDirection(Servo.Direction.REVERSE);
         clawServo.setDirection(Servo.Direction.REVERSE);
@@ -77,7 +77,7 @@ public class intake implements Subsystem {
     private static void close(){ clawServo.setPosition(.1); clawStates.setState(ClawState.CLOSED);
     }
     private static void open(){
-        clawServo.setPosition(.4); clawStates.setState(ClawState.OPEN); }
+        clawServo.setPosition(.5); clawStates.setState(ClawState.OPEN); }
 
     private static void setRotation(){
         rotation.setPosition(.5 + ((-Mercurial.gamepad1().leftTrigger().state() + Mercurial.gamepad1().rightTrigger().state()) * .5));
@@ -105,8 +105,8 @@ public class intake implements Subsystem {
         return new Lambda("wrist flat")
                 .addRequirements(INSTANCE)
                 .setInit(() -> {
-                    setWristPosition(.82);
-                    waiter.start(300);
+                    setWristPosition(.87);
+                    waiter.start(175);
                 })
                 .setFinish(() -> waiter.isDone());
     }
@@ -116,7 +116,7 @@ public class intake implements Subsystem {
         return new Lambda("wrist down")
                 .addRequirements(INSTANCE)
                 .setInit(() -> {
-                    setWristPosition(.13);
+                    setWristPosition(.2);
                     waiter.start(800);
                 })
                 .setFinish(() -> waiter.isDone());

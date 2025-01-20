@@ -31,7 +31,7 @@ public class extendo implements Subsystem {
     private static int liftTarget;
     private static PDFController pid;
     private static double power;
-    private static double kP = .004, kD = .0004, kF = 0;
+    private static double kP = .006, kD = .0006, kF = 0;
     private static int tollerence = 10;
     private extendo() { }
 
@@ -67,7 +67,7 @@ public class extendo implements Subsystem {
 
     public static void pidUpdate() {
         pid.setSetPoint(liftTarget);
-        power = pid.calculate(liftTarget, extendoEncoder.getCurrentPosition()) + kF;
+        power = pid.calculate(liftTarget, -extendoEncoder.getCurrentPosition()) + kF;
         extendoMotor.setPower(power);
     }
 

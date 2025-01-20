@@ -61,6 +61,7 @@ public class deposit implements Subsystem {
         leftWrist = new CachingServo(hwmap.get(Servo.class, "depositWristLeft"));
         rightWrist = new CachingServo(hwmap.get(Servo.class, "depositWristRight"));
         clawServo = hwmap.get(Servo.class, "depositClaw");
+        clawServo.setDirection(Servo.Direction.REVERSE);
         rightWrist.setDirection(Servo.Direction.REVERSE);
         waiter = new Waiter();
     }
@@ -72,8 +73,8 @@ public class deposit implements Subsystem {
         rightWrist.setPosition(position);
     }
 
-    private static void close(){ clawServo.setPosition(1); clawStates.setState(ClawState.CLOSED);}
-    private static void open(){ clawServo.setPosition(.85); clawStates.setState(ClawState.OPEN);}
+    private static void close(){ clawServo.setPosition(.6); clawStates.setState(ClawState.CLOSED);}
+    private static void open(){ clawServo.setPosition(.3); clawStates.setState(ClawState.OPEN);}
 
     @NonNull
     public static Lambda wristDeposit() {

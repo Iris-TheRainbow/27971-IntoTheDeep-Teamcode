@@ -56,10 +56,10 @@ public class drive implements Subsystem {
         @Override
         public void postUserInitHook(@NonNull Wrapper opMode) {
                 HardwareMap hwmap = opMode.getOpMode().hardwareMap;
-                leftBack = new CachingDcMotorEx(hwmap.get(DcMotorEx.class, "leftBack"));
-                leftFront = new CachingDcMotorEx(hwmap.get(DcMotorEx.class, "leftFront"));
+                leftBack = new CachingDcMotorEx(hwmap.get(DcMotorEx.class, "leftFront"));
+                leftFront = new CachingDcMotorEx(hwmap.get(DcMotorEx.class, "rightFront"));
                 rightBack = new CachingDcMotorEx(hwmap.get(DcMotorEx.class, "rightBack"));
-                rightFront = new CachingDcMotorEx(hwmap.get(DcMotorEx.class, "rightFront"));
+                rightFront = new CachingDcMotorEx(hwmap.get(DcMotorEx.class, "leftBack"));
                 otos = hwmap.get(SparkFunOTOSCorrected.class, "otos");
                 System.out.println(otos.setLinearScalar(PARAMS.linearScalar));
                 System.out.println(otos.setAngularScalar(PARAMS.angularScalar));

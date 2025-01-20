@@ -37,7 +37,7 @@ public final class TuningOpModes {
     public static final Class<?> DRIVE_CLASS = SparkFunOTOSDrive.class;
 
     public static final String GROUP = "quickstart";
-    public static final boolean DISABLED = true;
+    public static final boolean DISABLED = false;
 
     private TuningOpModes() {}
 

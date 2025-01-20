@@ -1,7 +1,16 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
+import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.depositSpec;
+import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.liftHang;
+import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.liftHigh;
+import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.liftMedium;
+import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.prepDepo;
+import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.retract;
+import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.transfer;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import org.firstinspires.ftc.teamcode.subsystems.CommandGroups;
 import org.firstinspires.ftc.teamcode.subsystems.arm;
 import org.firstinspires.ftc.teamcode.subsystems.extendo;
 import org.firstinspires.ftc.teamcode.subsystems.intake;
@@ -16,6 +25,7 @@ import dev.frozenmilk.mercurial.Mercurial;
 import dev.frozenmilk.mercurial.commands.groups.Advancing;
 import dev.frozenmilk.mercurial.commands.groups.Parallel;
 import dev.frozenmilk.mercurial.commands.groups.Sequential;
+import dev.frozenmilk.mercurial.commands.util.Wait;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp")
 @Mercurial.Attach
@@ -31,17 +41,19 @@ public class TeleOp extends OpMode {
     @Override
     public void init() {
         //lift
-        Mercurial.gamepad1().y().onTrue(new Sequential(deposit.closeClaw(), intake.openClaw(), new Parallel(lift.goTo(3500), deposit.wristDeposit(), arm.armUp())));
+        Mercurial.gamepad1().y().onTrue(new Sequential(drive.nerfDrive(1), retract(), transfer(), liftHigh()));
+        Mercurial.gamepad1().x().onTrue(new Sequential(drive.nerfDrive(1), retract(),liftMedium()));
         //retract extendo and transfer
-        Mercurial.gamepad1().a().onTrue(new Sequential(drive.nerfDrive(1), new Parallel(extendo.goTo(0), lift.goTo(0), intake.wristTransfer(), deposit.wristTransfer(), deposit.openClaw(), arm.armWait()), arm.armTransfer(), deposit.closeClaw(), intake.openClaw(), new Parallel(arm.armUp(), deposit.wristDeposit())));
+        Mercurial.gamepad1().a().onTrue(new Sequential(drive.nerfDrive(1), retract(), transfer(), prepDepo()));
         //extend
-        Mercurial.gamepad1().b().onTrue(new Sequential(drive.nerfDrive(.5), new Parallel(extendo.goTo(600), lift.goTo(0), arm.armTransfer(), deposit.wristDeposit(), intake.openClaw()), intake.wristIntake()));
+        Mercurial.gamepad1().b().onTrue(new Sequential(drive.nerfDrive(.5), CommandGroups.intake()));
         //toggle for wrist
         Mercurial.gamepad1().leftBumper().onTrue(new Advancing(intake.wristTransfer(), intake.wristIntake()));
         //toggle for claw
         Mercurial.gamepad1().rightBumper().onTrue(new Parallel(intake.toggleClaw(), deposit.toggleClaw()));
+        Mercurial.gamepad1().dpadLeft().onTrue(depositSpec());
         //hang extend
-        Mercurial.gamepad1().dpadUp().onTrue(new Parallel(extendo.goTo(0), lift.goTo(3500), intake.wristTransfer(), deposit.wristTransfer(), arm.armTransfer()));
+        Mercurial.gamepad1().dpadUp().onTrue(new Parallel(liftHang()));
         //hang retract
         Mercurial.gamepad1().dpadDown().onTrue(lift.goTo(0));
     }
@@ -52,5 +64,6 @@ public class TeleOp extends OpMode {
         telemetry.addData("lift power", lift.getPower());
         telemetry.addData("Extendo Pos", extendo.getLiftPosition());
         telemetry.addData("extendo power", extendo.getPower());
+        telemetry.addData("lift Error", lift.getError());
     }
 }
