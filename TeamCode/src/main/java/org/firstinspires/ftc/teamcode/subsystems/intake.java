@@ -61,8 +61,6 @@ public class intake implements Subsystem {
 
     @Override
     public void postUserLoopHook(@NonNull Wrapper opMode){
-        opMode.getOpMode().telemetry.addData("LeftServo", leftWrist.getPosition());
-        opMode.getOpMode().telemetry.addData("RightWrist", rightWrist.getPosition());
     }
 
     @Override
@@ -133,7 +131,8 @@ public class intake implements Subsystem {
                             clawStates.schedule(ClawState.OPEN);
                             break;
                     }
-                });
+                })
+                .setFinish(() -> true);
     }
     @NonNull
     public static Lambda closeClaw(){

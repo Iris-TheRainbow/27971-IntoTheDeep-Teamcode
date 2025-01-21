@@ -7,7 +7,7 @@ import dev.frozenmilk.mercurial.commands.util.Wait;
 
 public class CommandGroups {
     public static Command transfer(){
-        return new Sequential(arm.armTransfer(), deposit.closeClaw(), intake.openClaw());
+        return new Sequential(arm.armTransfer(), deposit.closeClaw(),new Wait(.3), intake.openClaw());
     }
     public static Command intake(){
         return new Sequential(new Parallel(lift.goTo(0), extendo.goTo(485), intake.openClaw(), deposit.wristTransfer(), arm.armWait()), intake.wristIntake());
@@ -25,10 +25,10 @@ public class CommandGroups {
         return liftGoTo(1800);
     }
     public static Command liftMedium(){
-        return liftGoTo(1000);
+        return new Parallel(lift.goTo(1000), deposit.wristSepc());
     }
     public static Command depositSpec(){
-        return new Sequential(liftGoTo(800), new Wait(.35), deposit.openClaw(), new Wait(.25), liftGoTo(1000));
+        return new Sequential(lift.goTo(800), deposit.openClaw(), new Wait(.3), lift.goTo(1000));
     }
     public static Command liftHang(){
         return new Parallel(lift.goTo(1800), deposit.wristTransfer(), arm.armWait(), extendo.goTo(0), intake.wristTransfer());

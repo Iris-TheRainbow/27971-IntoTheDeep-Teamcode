@@ -31,7 +31,7 @@ public class lift implements Subsystem {
     private static int liftTarget;
     private static double power;
     private static SquIDSLController squid;
-    private static double kP = .007, kD = 0, kS = 0;
+    private static double kP = .006, kD = 0, kS = 0;
     private static int tollerence = 30;
     private lift() { }
 
@@ -81,7 +81,7 @@ public class lift implements Subsystem {
     public static int getLiftPosition(){
         return -liftEncoder.getCurrentPosition();
     }
-    public static boolean atTarget() { return Math.abs(liftTarget - liftEncoder.getCurrentPosition()) < tollerence; }
+    public static boolean atTarget() { return Math.abs(liftTarget + liftEncoder.getCurrentPosition()) < tollerence; }
 
 
     @NonNull

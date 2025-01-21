@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -13,12 +14,16 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import dev.frozenmilk.dairy.cachinghardware.CachingServo;
 import dev.frozenmilk.dairy.core.dependency.Dependency;
 import dev.frozenmilk.dairy.core.dependency.annotation.SingleAnnotation;
 import dev.frozenmilk.dairy.core.wrapper.Wrapper;
 import dev.frozenmilk.mercurial.commands.Lambda;
+import dev.frozenmilk.mercurial.commands.StackUnwinder;
 import dev.frozenmilk.mercurial.commands.util.StateMachine;
 import dev.frozenmilk.mercurial.subsystems.Subsystem;
 import kotlin.annotation.MustBeDocumented;
@@ -82,7 +87,7 @@ public class deposit implements Subsystem {
                 .addRequirements(INSTANCE)
                 .setInit(() -> {
                     setPosition(.6);
-                    waiter.start(300);
+                    waiter.start(175);
                 })
                 .setFinish(() -> waiter.isDone());
     }
@@ -98,7 +103,8 @@ public class deposit implements Subsystem {
                             clawStates.schedule(ClawState.OPEN);
                             break;
                     }
-                });
+                })
+                .setFinish(() -> true);
     }
 
     @NonNull
@@ -111,28 +117,31 @@ public class deposit implements Subsystem {
                 })
                 .setFinish(() -> waiter.isDone());
     }
+    @NonNull
+    public static Lambda wristSepc() {
+        return new Lambda("wrist spec")
+                .addRequirements(INSTANCE)
+                .setInit(() -> {
+                    setPosition(.8);
+                    waiter.start(300);
+                })
+                .setFinish(() -> waiter.isDone());
+    }
+
 
     @NonNull
     public static Lambda closeClaw(){
         return new Lambda("Close Claw")
                 .addRequirements(INSTANCE)
                 .setInterruptible(false)
-                .setInit(() -> {
-                    close();
-                    waiter.start(200);
-                })
-                .setFinish(() -> waiter.isDone());
+                .setInit(deposit::close);
     }
 
     @NonNull
     public static Lambda openClaw(){
         return new Lambda("open Claw")
                 .addRequirements(INSTANCE)
-                .setInit(() -> {
-                    open();
-                    waiter.start(200);
-                })
-                .setFinish(() -> waiter.isDone());
+                .setInit(deposit::open);
     }
     private enum ClawState{
         OPEN,

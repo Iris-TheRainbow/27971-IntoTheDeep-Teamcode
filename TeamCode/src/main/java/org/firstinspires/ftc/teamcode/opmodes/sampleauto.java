@@ -20,7 +20,9 @@ import org.firstinspires.ftc.teamcode.util.LoopTimes;
 import org.firstinspires.ftc.teamcode.util.MercurialAction;
 import org.firstinspires.ftc.teamcode.util.SilkRoad;
 
-import dev.frozenmilk.dairy.core.util.features.BulkRead;
+import org.firstinspires.ftc.teamcode.util.BulkRead;
+import org.firstinspires.ftc.teamcode.util.SlothFinder;
+
 import dev.frozenmilk.mercurial.Mercurial;
 import dev.frozenmilk.mercurial.commands.groups.Parallel;
 import dev.frozenmilk.mercurial.commands.groups.Sequential;
@@ -35,6 +37,7 @@ import dev.frozenmilk.mercurial.commands.groups.Sequential;
 @BulkRead.Attach
 @LoopTimes.Attach
 @SilkRoad.Attach
+@SlothFinder.Attach
 public class sampleauto extends OpMode {
     private final Pose2d initialPose = new Pose2d(-24, -62.5, Math.toRadians(90));
     private SparkFunOTOSDrive drive;

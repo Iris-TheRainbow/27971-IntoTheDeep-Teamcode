@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import static org.firstinspires.ftc.teamcode.roadrunner.SparkFunOTOSDrive.PARAMS;
+import static org.firstinspires.ftc.teamcode.util.SignedMath.signedSquared;
 
 import androidx.annotation.NonNull;
 
@@ -79,9 +80,9 @@ public class drive implements Subsystem {
 
         public static void driveUpdate() {
                 // read the gamepads
-                double rightX = Mercurial.gamepad1().leftStickX().state();
-                double rightY = Mercurial.gamepad1().leftStickY().state();
-                double turn = Mercurial.gamepad1().rightStickX().state() * turnNerf;
+                double rightX = signedSquared(Mercurial.gamepad1().leftStickX().state());
+                double rightY = signedSquared(Mercurial.gamepad1().leftStickY().state());
+                double turn = signedSquared(Mercurial.gamepad1().rightStickX().state()) * turnNerf;
 
                 double heading = 0; //otos.getPosition().h;
                 // Do the kinematics math

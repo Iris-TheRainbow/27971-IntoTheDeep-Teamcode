@@ -17,7 +17,9 @@ import org.firstinspires.ftc.teamcode.util.LoopTimes;
 import org.firstinspires.ftc.teamcode.util.MercurialAction;
 import org.firstinspires.ftc.teamcode.util.SilkRoad;
 
-import dev.frozenmilk.dairy.core.util.features.BulkRead;
+import org.firstinspires.ftc.teamcode.util.BulkRead;
+import org.firstinspires.ftc.teamcode.util.SlothFinder;
+
 import dev.frozenmilk.mercurial.Mercurial;
 import dev.frozenmilk.mercurial.commands.groups.Parallel;
 import dev.frozenmilk.mercurial.commands.groups.Sequential;
@@ -33,7 +35,7 @@ import dev.frozenmilk.mercurial.commands.util.Wait;
 @Wavedash.Attach
 @BulkRead.Attach
 @LoopTimes.Attach
-
+@SlothFinder.Attach
 public class WaveDashTest extends OpMode {
     private final Pose2d initialPose = new Pose2d(-24, -62.5, Math.toRadians(90));
     private Action driveAction;
