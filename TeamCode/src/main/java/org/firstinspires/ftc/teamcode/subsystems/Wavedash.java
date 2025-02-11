@@ -9,14 +9,20 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Pose2dDual;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ThreadPool;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
+import org.firstinspires.ftc.teamcode.roadrunner.Drive;
 import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.SparkFunOTOSDrive;
+import org.firstinspires.ftc.teamcode.roadrunner.TrajectoryCommandBuilder;
+import org.firstinspires.ftc.teamcode.util.PidToPointBuilder;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -52,20 +58,20 @@ public class Wavedash implements Subsystem {
     @Override
     public void setDependency(@NonNull Dependency<?> dependency) { this.dependency = dependency; }
     private static Pose2d initialPose = new Pose2d(0, 0, 0);
-    private static MecanumDrive RRDrive;
+    private static SparkFunOTOSDrive RRDrive;
 
     private static FtcDashboard dash;
     private static Canvas canvas;
     private static final ArrayList<Action> actions = new ArrayList<Action>();
     private static HardwareMap hwmap;
+    private static Telemetry telem;
 
     @Override
     public void preUserInitHook(@NonNull Wrapper opMode) {
         hwmap = opMode.getOpMode().hardwareMap;
-        MecanumDrive RRDrive = GenerateRRDrive(hwmap);
-        if (opMode.getOpModeType() == OpModeMeta.Flavor.AUTONOMOUS){
-            setDefaultCommand(PIDToLast());
-        }
+        RRDrive = GenerateRRDrive(hwmap);
+        telem = opMode.getOpMode().telemetry;
+        setDefaultCommand(PIDToLast());
         dash = FtcDashboard.getInstance();
         canvas = new Canvas();
     }
@@ -88,39 +94,44 @@ public class Wavedash implements Subsystem {
         canvas = null;
         actions.clear();
     }
-
+    public static Pose2d getPose(){
+        return RRDrive.pose;
+    }
     public static void runAsync(Action action){
         actions.add(action);
     }
 
     public static void setInitialPose(Pose2d initialPose){
         Wavedash.initialPose = initialPose;
+        RRDrive.pose = initialPose;
     }
 
-    private static MecanumDrive GenerateRRDrive(HardwareMap hwmap){
+    private static SparkFunOTOSDrive GenerateRRDrive(HardwareMap hwmap){
         return new SparkFunOTOSDrive(hwmap, Wavedash.initialPose);
     }
 
-    public static TrajectoryActionBuilder actionBuilder(Pose2d initialPose){
-        return RRDrive.actionBuilder(initialPose);
-    }
+//    public static TrajectoryCommandBuilder commandBuilder(Pose2d initialPose){
+//        Wavedash.initialPose = initialPose;
+//        RRDrive = GenerateRRDrive(hwmap);
+//        return RRDrive.commandBuilder(initialPose);
+//    }
 
     @NonNull
     public static Lambda PIDToLast() {
         return new Lambda("PID to last set target")
                 .addRequirements(INSTANCE)
                 .setExecute(() -> {
-                    if (RRDrive.getLastTarget() != null){
-                        Pose2dDual<Time> target = RRDrive.getLastTarget();
+                    if (RRDrive.getLastTxWorldTarget() != null){
+                        telem.addLine("AHHHH");
+                        Pose2dDual<Time> target = RRDrive.getLastTxWorldTarget();
                         TelemetryPacket packet = new TelemetryPacket();
                         RRDrive.goToTarget(target, packet.fieldOverlay());
                         dash.sendTelemetryPacket(packet);
                     }
                 });
     }
-
     @NonNull
-    public static Lambda PIDToPoint(Pose2d pose, int translationalAccuracy, double headingAccuracy) {
+    public static Lambda PIDToPoint(Pose2d pose, double translationalAccuracy, double headingAccuracy) {
         Pose2dDual<Time> target = Pose2dDual.constant(pose, 3);
         return new Lambda("PID to last set target")
                 .addRequirements(INSTANCE)
@@ -133,7 +144,8 @@ public class Wavedash implements Subsystem {
                     double translationalError = target.value().minusExp(RRDrive.pose).position.norm();
                     double headingError = Math.abs(Math.toDegrees(target.value().minusExp(RRDrive.pose).heading.toDouble()));
                     return  translationalError < translationalAccuracy && headingError <  headingAccuracy;
-                });
+                })
+                .setEnd((interupted) -> RRDrive.setDrivePowers(new PoseVelocity2d(new Vector2d(0.0, 0.0), 0.0)));
     }
 
     @NonNull
@@ -141,11 +153,9 @@ public class Wavedash implements Subsystem {
         return PIDToPoint(pose, 1, 3);
     }
 
-    @NonNull
-    public static Lambda DriveBusy(){
-        return new Lambda("RR is doing stuff")
-                .addRequirements(INSTANCE)
-                .setFinish(() -> RRDrive.isDriveDone());
+    public static PidToPointBuilder p2pBuilder(Pose2d pose){
+        setInitialPose(pose);
+        return new PidToPointBuilder();
     }
 
      class ThreadedActionBuilder{

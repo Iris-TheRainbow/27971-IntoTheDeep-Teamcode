@@ -3,12 +3,15 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.util.PDFController;
 import org.firstinspires.ftc.teamcode.util.SquIDSLController;
+import org.firstinspires.ftc.teamcode.util.Waiter;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -33,6 +36,8 @@ public class lift implements Subsystem {
     private static SquIDSLController squid;
     private static double kP = .006, kD = 0, kS = 0;
     private static int tollerence = 30;
+    private static final Waiter waiter = new Waiter();
+    private static Telemetry telem;
     private lift() { }
 
     @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.TYPE) @MustBeDocumented
@@ -50,6 +55,7 @@ public class lift implements Subsystem {
 
     @Override
     public void postUserInitHook(@NonNull Wrapper opMode) {
+        telem = opMode.getOpMode().telemetry;
         HardwareMap hwmap = opMode.getOpMode().hardwareMap;
         liftLeft = new CachingDcMotorEx(hwmap.get(DcMotorEx.class, "liftLeft"));
         liftLeft2 = new CachingDcMotorEx(hwmap.get(DcMotorEx.class, "liftLeft2"));
@@ -65,15 +71,25 @@ public class lift implements Subsystem {
     public static void setTarget(int target){ liftTarget = target; }
 
     public static int getTarget(){ return liftTarget; }
-
-    public static void pidUpdate() {
-        power = squid.calculate(liftTarget, -liftEncoder.getCurrentPosition());
+    private static void setPower(double power){
         liftRight.setPower(power);
         liftLeft.setPower(power);
         liftLeft2.setPower(power);
     }
+    private static void setMode(DcMotor.RunMode mode){
+        liftRight.setMode(mode);
+        liftLeft.setMode(mode);
+        liftLeft2.setMode(mode);
+    }
+    public static void pidUpdate() {
+        power = squid.calculate(liftTarget, -liftEncoder.getCurrentPosition());
+        setPower(power);
+    }
 
-
+    public static void reset(){
+        liftEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
     public static double getPower(){
         return power;
     }
@@ -89,6 +105,7 @@ public class lift implements Subsystem {
         return new Lambda("update the pid")
                 .addRequirements(INSTANCE)
                 .setExecute(lift::pidUpdate)
+                .setInterruptible(() -> true)
                 .setFinish(() -> false);
     }
 
@@ -97,6 +114,25 @@ public class lift implements Subsystem {
         return new Lambda("set pid target")
                 .setExecute(() -> setTarget(to))
                 .setFinish(lift::atTarget);
+    }
+
+    @NonNull
+    public static Lambda retract(){
+        return new Lambda("retract lift")
+                .setRequirements(INSTANCE)
+                .setInit(() -> {
+                    setPower(-1);
+                    waiter.start(250);
+                })
+                .setExecute(() -> telem.addLine("retracting"))
+                .setFinish(() -> (Math.abs(liftEncoder.getVelocity()) < 10 && waiter.isDone()) || waiter.waitedTime() > 4000)
+                .setEnd((interrupted) ->{
+                    setPower(0);
+                    if (!interrupted){
+                        setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                        setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    }
+                });
     }
 
 }

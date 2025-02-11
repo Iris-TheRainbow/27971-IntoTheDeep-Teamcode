@@ -33,6 +33,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import dev.frozenmilk.sinister.loading.SinisterClassLoader;
+import dev.frozenmilk.sinister.opmode.SinisterOpModes;
+
 public final class TuningOpModes {
     public static final Class<?> DRIVE_CLASS = SparkFunOTOSDrive.class;
 
@@ -195,7 +198,6 @@ public final class TuningOpModes {
         manager.register(metaForClass(ManualFeedforwardTuner.class), new ManualFeedforwardTuner(dvf));
         manager.register(metaForClass(MecanumMotorDirectionDebugger.class), new MecanumMotorDirectionDebugger(dvf));
         manager.register(metaForClass(DeadWheelDirectionDebugger.class), new DeadWheelDirectionDebugger(dvf));
-
         manager.register(metaForClass(ManualFeedbackTuner.class), ManualFeedbackTuner.class);
         manager.register(metaForClass(SplineTest.class), SplineTest.class);
         manager.register(metaForClass(LocalizationTest.class), LocalizationTest.class);

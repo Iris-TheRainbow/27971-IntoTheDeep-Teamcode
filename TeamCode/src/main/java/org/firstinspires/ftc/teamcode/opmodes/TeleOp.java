@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.subsystems.lift;
 import org.firstinspires.ftc.teamcode.subsystems.deposit;
 import org.firstinspires.ftc.teamcode.util.BulkRead;
 import org.firstinspires.ftc.teamcode.util.LoopTimes;
+import org.firstinspires.ftc.teamcode.util.MercurialAction;
 import org.firstinspires.ftc.teamcode.util.SlothFinder;
 
 
@@ -59,9 +60,12 @@ public class TeleOp extends OpMode {
         Mercurial.gamepad1().dpadUp().onTrue(new Parallel(liftHang()));
         //hang retract
         Mercurial.gamepad1().dpadDown().onTrue(lift.goTo(0));
+        //overide fc
+        Mercurial.gamepad1().start().onTrue(drive.overideFC());
     }
 
     @Override
     public void loop() {
+        telemetry.addLine(Mercurial.INSTANCE.getActiveCommandSnapshot().toString());
     }
 }

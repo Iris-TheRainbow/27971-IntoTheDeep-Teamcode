@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.teamcode.util.SignedMath.signedSquared;
 
 import androidx.annotation.NonNull;
 
+import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ftc.SparkFunOTOSCorrected;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -13,6 +14,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -37,6 +39,7 @@ public class drive implements Subsystem {
         private static SparkFunOTOSCorrected otos;
         private static SparkFunOTOS.Pose2D pose;
         private static double turnNerf = 1;
+        private static boolean overide = false;
 
         private drive() { }
 
@@ -65,10 +68,18 @@ public class drive implements Subsystem {
                 System.out.println(otos.setLinearScalar(PARAMS.linearScalar));
                 System.out.println(otos.setAngularScalar(PARAMS.angularScalar));
                 otos.setAngularUnit(AngleUnit.RADIANS);
+                otos.setLinearUnit(DistanceUnit.INCH);
                 System.out.println(otos.calibrateImu(255, false));
                 setDefaultCommand(driveCommand());
                 leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
                 leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+                try{
+                        Pose2d wdPose = Wavedash.getPose();
+                        pose = new SparkFunOTOS.Pose2D(wdPose.position.x, wdPose.position.y, wdPose.heading.toDouble());
+                } catch(NullPointerException e){
+                        pose = new SparkFunOTOS.Pose2D(0, 0, 0);
+                }
+                otos.setPosition(pose);
         }
 
         @Override
@@ -78,13 +89,21 @@ public class drive implements Subsystem {
         public void postUserLoopHook(@NonNull Wrapper opMode){ //if (otos.getImuCalibrationProgress() == 0){ setDefaultCommand(driveCommand()); }
         }
 
+        public static double getHeading(){
+                if (overide){
+                        return 0;
+                }
+                else{
+                        return otos.getPosition().h;
+                }
+        }
         public static void driveUpdate() {
                 // read the gamepads
                 double rightX = signedSquared(Mercurial.gamepad1().leftStickX().state());
                 double rightY = signedSquared(Mercurial.gamepad1().leftStickY().state());
                 double turn = signedSquared(Mercurial.gamepad1().rightStickX().state()) * turnNerf;
 
-                double heading = 0; //otos.getPosition().h;
+                double heading = getHeading();
                 // Do the kinematics math
                 double rotX = (rightX * Math.cos(-heading) - rightY * Math.sin(-heading)) * 1.1;
                 double rotY = rightX * Math.sin(-heading) + rightY * Math.cos(-heading);
@@ -107,6 +126,12 @@ public class drive implements Subsystem {
         public static Lambda nerfDrive(double multiplier){
                 return new Lambda("nerf turn speed")
                         .setExecute(() -> {turnNerf = multiplier; });
+        }
+
+        @NonNull
+        public static Lambda overideFC(){
+                return new Lambda("overide")
+                        .setInit(() -> overide = !overide);
         }
 
         @NonNull

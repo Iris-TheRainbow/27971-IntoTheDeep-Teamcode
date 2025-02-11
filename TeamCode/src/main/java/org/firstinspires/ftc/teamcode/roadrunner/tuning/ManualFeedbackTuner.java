@@ -16,7 +16,7 @@ public final class ManualFeedbackTuner extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         if (TuningOpModes.DRIVE_CLASS.equals(SparkFunOTOSDrive.class)) {
-            SparkFunOTOSDrive drive = new SparkFunOTOSDrive(hardwareMap, new Pose2d(0, 0, 0));
+            MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
 
             waitForStart();
 

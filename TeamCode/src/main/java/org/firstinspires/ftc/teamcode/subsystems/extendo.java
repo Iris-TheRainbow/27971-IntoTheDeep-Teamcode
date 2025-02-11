@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -82,7 +83,7 @@ public class extendo implements Subsystem {
         return extendoEncoder.getCurrentPosition();
     }
     public static boolean atTarget() { return (extendoEncoder.getCurrentPosition() >= (getTarget() - tollerence) || extendoEncoder.getCurrentPosition() <= (getTarget() + tollerence)); }
-
+    public static void reset(){extendoEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); extendoEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);}
 
     @NonNull
     public static Lambda update() {

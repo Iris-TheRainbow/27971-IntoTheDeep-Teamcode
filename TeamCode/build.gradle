@@ -14,6 +14,7 @@
 // Include common definitions from above.
 apply from: '../build.common.gradle'
 apply from: '../build.dependencies.gradle'
+apply plugin: 'kotlin-android'
 apply plugin: 'dev.frozenmilk.sinister.sloth.Load'
 buildscript {
     repositories {
@@ -28,7 +29,10 @@ buildscript {
 }
 android {
     namespace = 'org.firstinspires.ftc.teamcode'
-
+    kotlinOptions {
+        jvmTarget = '1.8'
+        freeCompilerArgs = ["-Xjvm-default=all"]
+    }
     packagingOptions {
         jniLibs.useLegacyPackaging true
     }

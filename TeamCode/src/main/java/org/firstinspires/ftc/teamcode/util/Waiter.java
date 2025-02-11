@@ -8,6 +8,8 @@ public class Waiter {
         startTime = System.nanoTime() / 1000000;
         this.waitMS = waitMS;
     }
-
+    public long waitedTime(){
+        return (System.nanoTime() / 1000000) - startTime;
+    }
     public boolean isDone(){ return ((System.nanoTime() / 1000000) > (startTime + waitMS )); }
 }

@@ -20,14 +20,14 @@ import org.firstinspires.ftc.teamcode.roadrunner.messages.PoseMessage;
 
 
 @Config
-public class SparkFunOTOSDrive extends MecanumDrive {
+public class SparkFunOTOSDrive extends WavedashMecanumDrive {
     public static class Params {
-        public double OtosOffsetX = -4.085, OtosOffsetY = -4.4335, OtosOffsetH = .0024;
+        public double OtosOffsetX = -3.0998, OtosOffsetY = -3.0397, OtosOffsetH = -1.5672;
 
         public SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(OtosOffsetX, OtosOffsetY, OtosOffsetH);
         //target over actual
-        public double linearScalar = 1.02;
-        public double angularScalar = .9967;
+        public double linearScalar = .985; // 1.2084
+        public double angularScalar = .995;
     }
 
     public static SparkFunOTOSDrive.Params PARAMS = new SparkFunOTOSDrive.Params();
