@@ -122,10 +122,9 @@ public class lift implements Subsystem {
                 .setRequirements(INSTANCE)
                 .setInit(() -> {
                     setPower(-1);
-                    waiter.start(250);
                 })
                 .setExecute(() -> telem.addLine("retracting"))
-                .setFinish(() -> (Math.abs(liftEncoder.getVelocity()) < 10 && waiter.isDone()) || waiter.waitedTime() > 4000)
+                .setFinish(() -> (false))
                 .setEnd((interrupted) ->{
                     setPower(0);
                     if (!interrupted){

@@ -103,7 +103,7 @@ public class drive implements Subsystem {
                 double rightY = signedSquared(Mercurial.gamepad1().leftStickY().state());
                 double turn = signedSquared(Mercurial.gamepad1().rightStickX().state()) * turnNerf;
 
-                double heading = getHeading();
+                double heading = 0;//getHeading();
                 // Do the kinematics math
                 double rotX = (rightX * Math.cos(-heading) - rightY * Math.sin(-heading)) * 1.1;
                 double rotY = rightX * Math.sin(-heading) + rightY * Math.cos(-heading);
@@ -144,7 +144,6 @@ public class drive implements Subsystem {
         @NonNull
         public static Lambda zeroHeading() {
                 return new Lambda("zeroHeading")
-                        .addRequirements(INSTANCE)
                         .setInit(drive::resetHeading);
         }
     }

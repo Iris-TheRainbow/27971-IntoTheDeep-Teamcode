@@ -135,11 +135,11 @@ public class WavedashMecanumDrive implements Drive {
         // path controller gains
         public double axialGain = 6;
         public double lateralGain = 6;
-        public double headingGain = 8; // shared with turn
+        public double headingGain = 7; // shared with turn
 
-        public double axialVelGain = .1;
-        public double lateralVelGain = .1;
-        public double headingVelGain = .1; // shared with turn
+        public double axialVelGain = .15;
+        public double lateralVelGain = .15;
+        public double headingVelGain = .15; // shared with turn
     }
 
     public final MecanumKinematics kinematics;

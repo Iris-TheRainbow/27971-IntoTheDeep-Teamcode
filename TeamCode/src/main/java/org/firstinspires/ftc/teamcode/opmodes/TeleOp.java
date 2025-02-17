@@ -7,6 +7,7 @@ import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.liftMedium
 import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.prepDepo;
 import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.retract;
 import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.transfer;
+import static org.firstinspires.ftc.teamcode.util.commandUtil.proxiedCommand;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
@@ -27,6 +28,7 @@ import dev.frozenmilk.mercurial.Mercurial;
 import dev.frozenmilk.mercurial.commands.groups.Advancing;
 import dev.frozenmilk.mercurial.commands.groups.Parallel;
 import dev.frozenmilk.mercurial.commands.groups.Sequential;
+import dev.frozenmilk.mercurial.commands.util.Wait;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp")
 @Mercurial.Attach
@@ -42,6 +44,7 @@ import dev.frozenmilk.mercurial.commands.groups.Sequential;
 public class TeleOp extends OpMode {
     @Override
     public void init() {
+        Mercurial.gamepad2().y().onTrue(new Advancing(intake.wristTransfer(), deposit.wristTransfer(), arm.armTransfer(), deposit.closeClaw(),new Wait(.3), intake.openClaw()));
         //lift to high basket
         Mercurial.gamepad1().y().onTrue(new Sequential(drive.nerfDrive(1), retract(), transfer(), liftHigh()));
         //lift to high bar
@@ -62,6 +65,7 @@ public class TeleOp extends OpMode {
         Mercurial.gamepad1().dpadDown().onTrue(lift.goTo(0));
         //overide fc
         Mercurial.gamepad1().start().onTrue(drive.overideFC());
+        Mercurial.gamepad1().back().whileTrue(proxiedCommand(lift.retract()));
     }
 
     @Override

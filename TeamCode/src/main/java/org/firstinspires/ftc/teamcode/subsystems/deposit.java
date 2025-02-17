@@ -66,7 +66,7 @@ public class deposit implements Subsystem {
         leftWrist = new CachingServo(hwmap.get(Servo.class, "depositWristLeft"));
         rightWrist = new CachingServo(hwmap.get(Servo.class, "depositWristRight"));
         clawServo = hwmap.get(Servo.class, "depositClaw");
-        clawServo.setDirection(Servo.Direction.REVERSE);
+        clawServo.setDirection(Servo.Direction.FORWARD);
         rightWrist.setDirection(Servo.Direction.REVERSE);
         waiter = new Waiter();
     }
@@ -78,15 +78,15 @@ public class deposit implements Subsystem {
         rightWrist.setPosition(position);
     }
 
-    private static void close(){ clawServo.setPosition(.6); clawStates.setState(ClawState.CLOSED);}
-    private static void open(){ clawServo.setPosition(.3); clawStates.setState(ClawState.OPEN);}
+    private static void close(){ clawServo.setPosition(1); clawStates.setState(ClawState.CLOSED);}
+    private static void open(){ clawServo.setPosition(.8); clawStates.setState(ClawState.OPEN);}
 
     @NonNull
     public static Lambda wristDeposit() {
         return new Lambda("wrist flat")
                 .addRequirements(INSTANCE)
                 .setInit(() -> {
-                    setPosition(.6);
+                    setPosition(.65);
                     waiter.start(175);
                 })
                 .setFinish(() -> waiter.isDone());
@@ -112,7 +112,7 @@ public class deposit implements Subsystem {
         return new Lambda("wrist down")
                 .addRequirements(INSTANCE)
                 .setInit(() -> {
-                    setPosition(.02);
+                    setPosition(.1);
                     waiter.start(300);
                 })
                 .setFinish(() -> waiter.isDone());
@@ -122,7 +122,7 @@ public class deposit implements Subsystem {
         return new Lambda("wrist spec")
                 .addRequirements(INSTANCE)
                 .setInit(() -> {
-                    setPosition(.8);
+                    setPosition(.85);
                     waiter.start(300);
                 })
                 .setFinish(() -> waiter.isDone());

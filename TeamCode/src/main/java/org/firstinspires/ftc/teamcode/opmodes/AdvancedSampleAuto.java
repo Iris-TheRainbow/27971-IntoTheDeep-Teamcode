@@ -31,6 +31,7 @@ import org.firstinspires.ftc.teamcode.subsystems.intake;
 import org.firstinspires.ftc.teamcode.subsystems.lift;
 import org.firstinspires.ftc.teamcode.util.LoopTimes;
 import org.firstinspires.ftc.teamcode.util.MercurialAction;
+import org.firstinspires.ftc.teamcode.util.PidToPointBuilder;
 import org.firstinspires.ftc.teamcode.util.SilkRoad;
 
 import org.firstinspires.ftc.teamcode.util.BulkRead;
@@ -65,7 +66,10 @@ public class AdvancedSampleAuto extends OpMode {
     private final Pose2d depositSpot = new Pose2d(-54, -55, Math.toRadians(230));
     private Command driveCommand;
     private Command intakeSample(){
-        return new Sequential(CommandGroups.intake(), new Wait(.25), intake.closeClaw(), new Wait(.45));
+        return new Sequential(CommandGroups.intake(), new Wait(.2), intake.closeClaw(), new Wait(.2));
+    }
+    private Command intakeSampleShort(){
+        return new Sequential(CommandGroups.intakeAutoShort(), new Wait(.2), intake.closeClaw(), new Wait(.45));
     }
     private Command transferAndLift(){
         return new Sequential(retract(), transfer(), liftHigh());
@@ -125,7 +129,7 @@ public class AdvancedSampleAuto extends OpMode {
                 .stopAndAdd(deposit.openClaw())
 
                 //cycle1
-                .pidTo(new Pose2d(-46, -53, Math.toRadians(90-180)))
+                .pidTo(new Pose2d(-45.50, -54, Math.toRadians(90-180)))
                 .stopAndAdd(intakeSample())
                 .pidTo(new Pose2d(-48, -56, Math.toRadians(240)))
                 .duringLast(transferAndLift())
@@ -133,18 +137,20 @@ public class AdvancedSampleAuto extends OpMode {
                 .stopAndAdd(deposit.openClaw())
 
                 //cycle2
-                .pidTo(new Pose2d(-40, -50, Math.toRadians(90-180)), 3, 99999)
-                .pidTo(new Pose2d(-52.5, -53, Math.toRadians(90-180)), .5, 2)
-                .duringLast(extendo.goTo(485))
-                .stopAndAdd(intakeSample())
+                .pidTo(new Pose2d(-55, -50, Math.toRadians(90-180)), 3, 99999)
+                .pidTo(new Pose2d(-55, -53, Math.toRadians(90-180)), .5, 2)
+                .duringLast(extendo.goTo(465))
+                .afterTime(.2, lift.goTo(0))
+                .stopAndAdd(intakeSampleShort())
                 .pidTo(new Pose2d(-48, -56, Math.toRadians(240)))
                 .duringLast(transferAndLift())
                 .pidTo(depositSpot)
                 .stopAndAdd(deposit.openClaw())
 
                 //cycle3
-                .pidTo(new Pose2d(-42, -37, Math.toRadians(-25)))
-                .duringLast(extendo.goTo(435))
+                .pidTo(new Pose2d(-54, -53, Math.toRadians(230)))
+                .pidTo(new Pose2d(-42, -38, Math.toRadians(-25)))
+                .afterTime(.25, extendo.goTo(435), lift.goTo(0))
                 .stopAndAdd(new Sequential(intakeAuto(), intake.wristRotate(.7), new Wait(.5), intake.closeClaw(), new Wait(.25), intake.wristRotate(.5)))
                 .pidTo(new Pose2d(-48, -56, Math.toRadians(240)))
                 .duringLast(transferAndLift())
@@ -153,8 +159,9 @@ public class AdvancedSampleAuto extends OpMode {
 
                 //cycle4
                 .pidTo(new Pose2d(-44, -13, Math.toRadians(180)), 20, 999) //waypoint so i dont hit the leg
-                .pidTo(new Pose2d(-24, -9, Math.toRadians(180)), 8, 10)
+                .pidTo(new Pose2d(-24, -9, Math.toRadians(180)))
                 .stopAndAdd(intakeSample())
+                .stopAndAdd(intake.wristTransfer())
                 .pidTo(new Pose2d(-44, -15, Math.toRadians(180)), 20, 999) //waypoint again
                 .stopAndAdd(extendo.goTo(0))
                 .pidTo(new Pose2d(-48, -56, Math.toRadians(240)))
@@ -164,8 +171,8 @@ public class AdvancedSampleAuto extends OpMode {
 
                 //park
                 .pidTo(new Pose2d(-44, -15, Math.toRadians(0)), 20, 999) //waypoint so I dont hit the leg
-                .pidTo(new Pose2d(-24, -9, Math.toRadians(0)))
-                .duringLast(lift.goTo(340))//to touch l1
+                .pidTo(new Pose2d(-22, -9, Math.toRadians(0)))
+                .duringLast(lift.goTo(100), deposit.wristSepc())//to touch l1
                 .build();
     }
     @Override

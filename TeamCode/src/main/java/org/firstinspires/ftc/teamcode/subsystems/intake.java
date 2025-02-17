@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.util.Waiter;
 
@@ -72,13 +73,13 @@ public class intake implements Subsystem {
         leftWrist.setPosition(position);
         rightWrist.setPosition(position);
     }
-    private static void close(){ clawServo.setPosition(.1); clawStates.setState(ClawState.CLOSED);
+    private static void close(){ clawServo.setPosition(.02); clawStates.setState(ClawState.CLOSED);
     }
     private static void open(){
-        clawServo.setPosition(.5); clawStates.setState(ClawState.OPEN); }
+        clawServo.setPosition(.14); clawStates.setState(ClawState.OPEN); }
 
     private static void setRotation(){
-        rotation.setPosition(.5 + ((-Mercurial.gamepad1().leftTrigger().state() + Mercurial.gamepad1().rightTrigger().state()) * .5));
+        rotation.setPosition(.5 + ((-Mercurial.gamepad1().leftTrigger().state() * .8 + Mercurial.gamepad1().rightTrigger().state() * .83) * .5));
     }
     private static void setWristRotation(double pos){
         rotation.setPosition(pos);
@@ -115,7 +116,7 @@ public class intake implements Subsystem {
                 .addRequirements(INSTANCE)
                 .setInit(() -> {
                     setWristPosition(.2);
-                    waiter.start(800);
+                    waiter.start(400);
                 })
                 .setFinish(() -> waiter.isDone());
     }
