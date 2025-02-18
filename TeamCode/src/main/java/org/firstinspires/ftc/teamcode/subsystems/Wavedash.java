@@ -138,7 +138,11 @@ public class Wavedash implements Subsystem {
         return new Lambda("PID to last set target")
                 .addRequirements(INSTANCE)
                 .setExecute(() -> {
-                    RRDrive.goToTarget(target, Telem.telemPacket.fieldOverlay());
+                    double translationalError = target.value().minusExp(RRDrive.pose).position.norm();
+                    double headingError = Math.abs(Math.toDegrees(target.value().minusExp(RRDrive.pose).heading.toDouble()));
+                    if (!(translationalError < .5 && headingError <  1)) {
+                        RRDrive.goToTarget(target, Telem.telemPacket.fieldOverlay());
+                    }
                 })
                 .setFinish(() -> {
                     double translationalError = target.value().minusExp(RRDrive.pose).position.norm();

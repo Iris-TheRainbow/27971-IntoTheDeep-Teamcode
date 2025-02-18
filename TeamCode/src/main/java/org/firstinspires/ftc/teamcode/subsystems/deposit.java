@@ -92,6 +92,16 @@ public class deposit implements Subsystem {
                 .setFinish(() -> waiter.isDone());
     }
     @NonNull
+    public static Lambda wristWait() {
+        return new Lambda("wrist flat")
+                .addRequirements(INSTANCE)
+                .setInit(() -> {
+                    setPosition(.2);
+                    waiter.start(175);
+                })
+                .setFinish(() -> waiter.isDone());
+    }
+    @NonNull
     public static Lambda toggleClaw(){  
         return new Lambda("claw toggle")
                 .setInit(() -> {
@@ -112,8 +122,8 @@ public class deposit implements Subsystem {
         return new Lambda("wrist down")
                 .addRequirements(INSTANCE)
                 .setInit(() -> {
-                    setPosition(.1);
-                    waiter.start(300);
+                    setPosition(.10);
+                    waiter.start(100);
                 })
                 .setFinish(() -> waiter.isDone());
     }

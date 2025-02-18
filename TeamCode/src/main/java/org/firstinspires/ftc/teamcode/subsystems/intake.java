@@ -105,7 +105,7 @@ public class intake implements Subsystem {
                 .addRequirements(INSTANCE)
                 .setInit(() -> {
                     setWristPosition(.87);
-                    waiter.start(100);
+                    waiter.start(150);
                 })
                 .setFinish(() -> waiter.isDone());
     }
@@ -115,7 +115,7 @@ public class intake implements Subsystem {
         return new Lambda("wrist flat")
                 .addRequirements(INSTANCE)
                 .setInit(() -> {
-                    setWristPosition(.6);
+                    setWristPosition(.7);
                     waiter.start(175);
                 })
                 .setFinish(() -> waiter.isDone());
@@ -126,8 +126,8 @@ public class intake implements Subsystem {
         return new Lambda("wrist down")
                 .addRequirements(INSTANCE)
                 .setInit(() -> {
-                    setWristPosition(.2);
-                    waiter.start(300);
+                    setWristPosition(.22);
+                    waiter.start(350);
                 })
                 .setFinish(() -> waiter.isDone());
     }

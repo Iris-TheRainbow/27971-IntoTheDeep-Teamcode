@@ -22,8 +22,15 @@ import dev.frozenmilk.mercurial.commands.util.Wait;
 public class PidToPointBuilder {
     private final List<Command> commands = new ArrayList<>();
     private Pose2d pose;
-    public PidToPointBuilder pidTo(Pose2d pose){
+    public PidToPointBuilder pidAfter(double seconds, Pose2d pose){
+        return pidAfter(seconds, pose, 1, 3);
+    }
+    public PidToPointBuilder pidAfter(double seconds, Pose2d pose, double translationalAccuracy, double headingAccuracy){
         this.pose = pose;
+        commands.add(new Sequential(new Wait(seconds), Wavedash.PIDToPoint(pose, translationalAccuracy, headingAccuracy)));
+        return this;
+    }
+    public PidToPointBuilder pidTo(Pose2d pose){
         return pidTo(pose, 1, 3);
     }
     public PidToPointBuilder pidTo(Pose2d pose, double translationalAccuracy, double headingAccuracy){
