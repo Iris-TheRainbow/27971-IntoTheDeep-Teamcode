@@ -10,13 +10,13 @@ public class CommandGroups {
         return new Sequential(arm.armTransfer(), deposit.closeClaw(),new Wait(.3), intake.openClaw());
     }
     public static Command intake(){
-        return new Sequential(new Parallel(lift.goTo(0), extendo.goTo(485), intake.openClaw(), deposit.wristTransfer(), arm.armWait()), intake.wristIntake());
+        return new Sequential(new Parallel(lift.goTo(0), extendo.goTo(485), intake.openClaw(), deposit.wristTransfer(), arm.armWait(), intake.wristExtend()), intake.wristIntake());
     }
     public static Command intakeAuto(){
-        return new Sequential(new Parallel(extendo.goTo(430), intake.openClaw(), deposit.wristTransfer(), arm.armWait()), intake.wristIntake());
+        return new Sequential(new Parallel(extendo.goTo(430), intake.openClaw(), deposit.wristTransfer(), arm.armWait(), intake.wristExtend()), intake.wristIntake());
     }
     public static Command intakeAutoShort(){
-        return new Sequential(new Parallel(lift.goTo(0), extendo.goTo(465), intake.openClaw(), deposit.wristTransfer(), arm.armWait()), intake.wristIntake());
+        return new Sequential(new Parallel(lift.goTo(0), extendo.goTo(465), intake.openClaw(), deposit.wristTransfer(), arm.armWait(), intake.wristExtend()), intake.wristIntake());
     }
     public static Command retract(){
         return new Parallel(intake.wristTransfer(), intake.closeClaw(), deposit.openClaw(), deposit.wristTransfer(), arm.armWait(), lift.goTo(0), extendo.goTo(0));

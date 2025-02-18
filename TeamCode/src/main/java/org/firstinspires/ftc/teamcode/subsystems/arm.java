@@ -64,7 +64,7 @@ public class arm implements Subsystem {
                 .addRequirements(INSTANCE)
                 .setInit(() -> {
                     setPosition(.06);
-                    waiter.start(200);
+                    waiter.start(150);
                 })
                 .setFinish(() -> waiter.isDone());
     }
@@ -73,8 +73,8 @@ public class arm implements Subsystem {
         return new Lambda("arm stow")
                 .addRequirements(INSTANCE)
                 .setInit(() -> {
-                    setPosition(.3);
-                    waiter.start(300);
+                    setPosition(.25);
+                    waiter.start(200);
                 })
                 .setFinish(() -> waiter.isDone());
     }
@@ -85,7 +85,17 @@ public class arm implements Subsystem {
                 .addRequirements(INSTANCE)
                 .setInit(() -> {
                     setPosition(.43);
-                    waiter.start(500);
+                    waiter.start(200);
+                })
+                .setFinish(() -> waiter.isDone());
+    }
+    @NonNull
+    public static Lambda armExtend(){
+        return new Lambda("arm up")
+                .addRequirements(INSTANCE)
+                .setInit(() -> {
+                    setPosition(.35);
+                    waiter.start(200);
                 })
                 .setFinish(() -> waiter.isDone());
     }

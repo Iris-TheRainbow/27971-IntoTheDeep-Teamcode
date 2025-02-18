@@ -22,6 +22,7 @@ import org.firstinspires.ftc.teamcode.subsystems.lift;
 import org.firstinspires.ftc.teamcode.util.BulkRead;
 import org.firstinspires.ftc.teamcode.util.LoopTimes;
 import org.firstinspires.ftc.teamcode.util.SlothFinder;
+import org.firstinspires.ftc.teamcode.util.Telem;
 
 import dev.frozenmilk.mercurial.Mercurial;
 import dev.frozenmilk.mercurial.commands.Command;
@@ -39,6 +40,7 @@ import dev.frozenmilk.mercurial.commands.util.Wait;
 @BulkRead.Attach
 @LoopTimes.Attach
 @SlothFinder.Attach
+@Telem.Attach
 public class SpecimineAuto extends OpMode {
     private final Pose2d initialPose = new Pose2d(12, -62.5, Math.toRadians(90));
     private Command driveCommand;

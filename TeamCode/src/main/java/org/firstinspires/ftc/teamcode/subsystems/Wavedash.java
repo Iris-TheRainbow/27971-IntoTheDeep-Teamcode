@@ -23,6 +23,7 @@ import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.SparkFunOTOSDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.TrajectoryCommandBuilder;
 import org.firstinspires.ftc.teamcode.util.PidToPointBuilder;
+import org.firstinspires.ftc.teamcode.util.Telem;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -60,7 +61,7 @@ public class Wavedash implements Subsystem {
     private static Pose2d initialPose = new Pose2d(0, 0, 0);
     private static SparkFunOTOSDrive RRDrive;
 
-    private static FtcDashboard dash;
+
     private static Canvas canvas;
     private static final ArrayList<Action> actions = new ArrayList<Action>();
     private static HardwareMap hwmap;
@@ -72,25 +73,22 @@ public class Wavedash implements Subsystem {
         RRDrive = GenerateRRDrive(hwmap);
         telem = opMode.getOpMode().telemetry;
         setDefaultCommand(PIDToLast());
-        dash = FtcDashboard.getInstance();
         canvas = new Canvas();
     }
 
     @Override
     public void postUserLoopHook(@NonNull Wrapper opMode) {
-        TelemetryPacket packet = new TelemetryPacket();
-        packet.fieldOverlay().getOperations().addAll(canvas.getOperations());
+
+        Telem.telemPacket.fieldOverlay().getOperations().addAll(canvas.getOperations());
         Iterator<Action> iter = actions.iterator();
         while (iter.hasNext() && !Thread.currentThread().isInterrupted()) {
             Action action = iter.next();
-            if (!action.run(packet)) iter.remove();
+            if (!action.run(Telem.telemPacket)) iter.remove();
         }
-        dash.sendTelemetryPacket(packet);
     }
 
     @Override
     public void cleanup(@NonNull Wrapper opMode) {
-        dash = null;
         canvas = null;
         actions.clear();
     }
@@ -116,6 +114,12 @@ public class Wavedash implements Subsystem {
 //        return RRDrive.commandBuilder(initialPose);
 //    }
 
+    public static TrajectoryActionBuilder actionBuilder(Pose2d initialPose) {
+        Wavedash.initialPose = initialPose;
+        RRDrive = GenerateRRDrive(hwmap);
+        return RRDrive.actionBuilder(initialPose);
+    }
+
     @NonNull
     public static Lambda PIDToLast() {
         return new Lambda("PID to last set target")
@@ -124,9 +128,7 @@ public class Wavedash implements Subsystem {
                     if (RRDrive.getLastTxWorldTarget() != null){
                         telem.addLine("AHHHH");
                         Pose2dDual<Time> target = RRDrive.getLastTxWorldTarget();
-                        TelemetryPacket packet = new TelemetryPacket();
-                        RRDrive.goToTarget(target, packet.fieldOverlay());
-                        dash.sendTelemetryPacket(packet);
+                        RRDrive.goToTarget(target, Telem.telemPacket.fieldOverlay());
                     }
                 });
     }
@@ -136,9 +138,7 @@ public class Wavedash implements Subsystem {
         return new Lambda("PID to last set target")
                 .addRequirements(INSTANCE)
                 .setExecute(() -> {
-                    TelemetryPacket packet = new TelemetryPacket();
-                    RRDrive.goToTarget(target, packet.fieldOverlay());
-                    dash.sendTelemetryPacket(packet);
+                    RRDrive.goToTarget(target, Telem.telemPacket.fieldOverlay());
                 })
                 .setFinish(() -> {
                     double translationalError = target.value().minusExp(RRDrive.pose).position.norm();

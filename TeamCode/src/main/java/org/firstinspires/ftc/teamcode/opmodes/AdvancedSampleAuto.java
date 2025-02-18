@@ -36,6 +36,7 @@ import org.firstinspires.ftc.teamcode.util.SilkRoad;
 
 import org.firstinspires.ftc.teamcode.util.BulkRead;
 import org.firstinspires.ftc.teamcode.util.SlothFinder;
+import org.firstinspires.ftc.teamcode.util.Telem;
 
 import java.util.Set;
 import java.util.function.Consumer;
@@ -61,6 +62,7 @@ import dev.frozenmilk.mercurial.commands.util.Wait;
 @BulkRead.Attach
 @LoopTimes.Attach
 @SlothFinder.Attach
+@Telem.Attach
 public class AdvancedSampleAuto extends OpMode {
     private final Pose2d initialPose = new Pose2d(-36, -62.5, Math.toRadians(180));
     private final Pose2d depositSpot = new Pose2d(-54, -55, Math.toRadians(230));
