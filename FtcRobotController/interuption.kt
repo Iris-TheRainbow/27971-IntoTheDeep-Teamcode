@@ -1,0 +1,4 @@
+interface interuption {
+    fun toBool();
+    
+}

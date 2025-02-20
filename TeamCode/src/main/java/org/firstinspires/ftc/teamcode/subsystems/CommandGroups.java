@@ -31,10 +31,10 @@ public class CommandGroups {
         return liftGoTo(1400);
     }
     public static Command liftMedium(){
-        return new Parallel(lift.goTo(525), deposit.wristSepc(), arm.armUp());
+        return new Parallel(lift.goTo(300), deposit.prepSpec(), arm.armUp());
     }
     public static Command depositSpec(){
-        return new Sequential(new Parallel(lift.goTo(225), deposit.wristSepc()), deposit.openClaw());
+        return new Sequential(deposit.wristSepc(), deposit.openClaw());
     }
     public static Command liftHang(){
         return new Parallel(lift.goTo(1700), deposit.wristTransfer(), arm.armWait(), extendo.goTo(0), intake.wristTransfer());

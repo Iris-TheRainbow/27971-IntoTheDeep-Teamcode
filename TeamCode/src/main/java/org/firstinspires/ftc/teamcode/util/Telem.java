@@ -22,15 +22,15 @@ import dev.frozenmilk.dairy.core.wrapper.Wrapper;
 
 public class Telem implements Feature {
     public static TelemetryPacket telemPacket;
-    private FtcDashboard dash;
+    private static FtcDashboard dash;
     @Override
     public void preUserInitHook(@NonNull Wrapper opMode){
         dash = FtcDashboard.getInstance();
+        telemPacket = new TelemetryPacket();
     }
     @Override
     public void preUserInitLoopHook(@NonNull Wrapper opMode) {
         dash.sendTelemetryPacket(telemPacket);
-        telemPacket = new TelemetryPacket();
     }
 
     @Override

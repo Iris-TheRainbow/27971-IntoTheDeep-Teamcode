@@ -124,7 +124,7 @@ public class AdvancedSampleAuto extends OpMode {
 //                .strafeTo(new Vector2d(-20, -9));
 
         driveCommand = Wavedash.p2pBuilder(initialPose)
-                .pidAfter(.4, depositSpot)
+                .pidTo(depositSpot)
                 .duringLast(liftHigh())
                 .stopAndAdd(deposit.openClaw())
 

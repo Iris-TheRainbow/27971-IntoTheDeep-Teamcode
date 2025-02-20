@@ -78,13 +78,12 @@ public class Wavedash implements Subsystem {
 
     @Override
     public void postUserLoopHook(@NonNull Wrapper opMode) {
-
-        Telem.telemPacket.fieldOverlay().getOperations().addAll(canvas.getOperations());
-        Iterator<Action> iter = actions.iterator();
-        while (iter.hasNext() && !Thread.currentThread().isInterrupted()) {
-            Action action = iter.next();
-            if (!action.run(Telem.telemPacket)) iter.remove();
-        }
+//        Telem.telemPacket.fieldOverlay().getOperations().addAll(canvas.getOperations());
+//        Iterator<Action> iter = actions.iterator();
+//        while (iter.hasNext() && !Thread.currentThread().isInterrupted()) {
+//            Action action = iter.next();
+//            if (!action.run(Telem.telemPacket)) iter.remove();
+//        }
     }
 
     @Override
@@ -126,9 +125,16 @@ public class Wavedash implements Subsystem {
                 .addRequirements(INSTANCE)
                 .setExecute(() -> {
                     if (RRDrive.getLastTxWorldTarget() != null){
-                        telem.addLine("AHHHH");
                         Pose2dDual<Time> target = RRDrive.getLastTxWorldTarget();
-                        RRDrive.goToTarget(target, Telem.telemPacket.fieldOverlay());
+                        TelemetryPacket p = new TelemetryPacket();
+                        canvas = new Canvas();
+                        double translationalError = target.value().minusExp(RRDrive.pose).position.norm();
+                        double headingError = Math.abs(Math.toDegrees(target.value().minusExp(RRDrive.pose).heading.toDouble()));
+                        if (!(translationalError < .3 && headingError <  1)) {
+                            RRDrive.goToTarget(target, canvas);
+                        }else {
+                            RRDrive.setDrivePowers(new PoseVelocity2d(new Vector2d(0, 0), 0));
+                        }
                     }
                 });
     }
@@ -141,7 +147,9 @@ public class Wavedash implements Subsystem {
                     double translationalError = target.value().minusExp(RRDrive.pose).position.norm();
                     double headingError = Math.abs(Math.toDegrees(target.value().minusExp(RRDrive.pose).heading.toDouble()));
                     if (!(translationalError < .5 && headingError <  1)) {
-                        RRDrive.goToTarget(target, Telem.telemPacket.fieldOverlay());
+                        RRDrive.goToTarget(target, canvas);
+                    } else {
+                        RRDrive.setDrivePowers(new PoseVelocity2d(new Vector2d(0, 0), 0));
                     }
                 })
                 .setFinish(() -> {

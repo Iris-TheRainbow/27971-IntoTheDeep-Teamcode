@@ -137,6 +137,16 @@ public class deposit implements Subsystem {
                 })
                 .setFinish(() -> waiter.isDone());
     }
+    @NonNull
+    public static Lambda prepSpec() {
+        return new Lambda("wrist spec")
+                .addRequirements(INSTANCE)
+                .setInit(() -> {
+                    setPosition(.5);
+                    waiter.start(150);
+                })
+                .setFinish(() -> waiter.isDone());
+    }
 
 
     @NonNull
