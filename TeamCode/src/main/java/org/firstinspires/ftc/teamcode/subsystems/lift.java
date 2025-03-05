@@ -32,6 +32,7 @@ public class lift implements Subsystem {
     public static final lift INSTANCE = new lift();
     private static DcMotorEx liftLeft, liftLeft2, liftRight, liftEncoder;
     private static int liftTarget;
+    public static int liftOffset;
     private static double power;
     private static SquIDSLController squid;
     private static double kP = .006, kD = 0, kS = 0;
@@ -68,7 +69,7 @@ public class lift implements Subsystem {
         squid = new SquIDSLController(kP, kD, kS);
     }
 
-    public static void setTarget(int target){ liftTarget = target; }
+    public static void setTarget(int target){ liftTarget = (liftOffset + target); }
 
     public static int getTarget(){ return liftTarget; }
     private static void setPower(double power){
@@ -99,7 +100,9 @@ public class lift implements Subsystem {
     }
     public static boolean atTarget() { return Math.abs(liftTarget + liftEncoder.getCurrentPosition()) < tollerence; }
 
-
+    public static boolean extended(){
+        return liftTarget > 0;
+    }
     @NonNull
     public static Lambda update() {
         return new Lambda("update the pid")
@@ -117,21 +120,19 @@ public class lift implements Subsystem {
     }
 
     @NonNull
+    public static Lambda offset(int offset){
+        return new Lambda("set pid target")
+                .setInit(() -> {liftOffset += (offset);});
+    }
+
+    @NonNull
     public static Lambda retract(){
         return new Lambda("retract lift")
                 .setRequirements(INSTANCE)
                 .setInit(() -> {
-                    setPower(-1);
-                })
-                .setExecute(() -> telem.addLine("retracting"))
-                .setFinish(() -> (false))
-                .setEnd((interrupted) ->{
-                    setPower(0);
-                    if (!interrupted){
                         setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                         setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    }
-                });
+                    });
     }
 
 }

@@ -7,6 +7,7 @@ import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.liftMedium
 import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.prepDepo;
 import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.retract;
 import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.transfer;
+import static org.firstinspires.ftc.teamcode.util.commandUtil.ifElse;
 import static org.firstinspires.ftc.teamcode.util.commandUtil.proxiedCommand;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -29,6 +30,7 @@ import dev.frozenmilk.mercurial.Mercurial;
 import dev.frozenmilk.mercurial.commands.groups.Advancing;
 import dev.frozenmilk.mercurial.commands.groups.Parallel;
 import dev.frozenmilk.mercurial.commands.groups.Sequential;
+import dev.frozenmilk.mercurial.commands.util.IfElse;
 import dev.frozenmilk.mercurial.commands.util.Wait;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp")
@@ -46,6 +48,7 @@ import dev.frozenmilk.mercurial.commands.util.Wait;
 public class TeleOp extends OpMode {
     @Override
     public void init() {
+        lift.liftOffset = 0;
         Mercurial.gamepad2().y().onTrue(new Advancing(intake.wristTransfer(), deposit.wristTransfer(), arm.armTransfer(), deposit.closeClaw(),new Wait(.3), intake.openClaw()));
         //lift to high basket
         Mercurial.gamepad1().y().onTrue(new Sequential(drive.nerfDrive(1), retract(), transfer(), liftHigh()));
@@ -59,15 +62,18 @@ public class TeleOp extends OpMode {
         Mercurial.gamepad1().leftBumper().onTrue(new Advancing(intake.wristTransfer(), intake.wristIntake()));
         //toggle for claw
         Mercurial.gamepad1().rightBumper().onTrue(new Parallel(intake.toggleClaw(), deposit.toggleClaw()));
+        //Mercurial.gamepad1().rightBumper().onTrue(new IfElse(lift::extended, proxiedCommand(new Sequential(deposit.openClaw(), new Wait(.05), new Parallel(arm.armExtend(), new Sequential(new Wait(.1), retract())))), proxiedCommand(new Parallel(intake.toggleClaw(), deposit.toggleClaw()))));
+        //Mercurial.gamepad1().rightBumper().onTrue(ifElse(lift::extended,new Sequential(deposit.openClaw(), new Wait(.05), new Parallel(arm.armExtend(), new Sequential(new Wait(.1), retract()))),  new Parallel(intake.toggleClaw(), deposit.toggleClaw())));
         //retract then depo for spec
         Mercurial.gamepad1().dpadLeft().onTrue(depositSpec());
         //hang extend
-        Mercurial.gamepad1().dpadUp().onTrue(new Parallel(liftHang()));
+        Mercurial.gamepad1().dpadUp().onTrue(lift.offset(10));
         //hang retract
-        Mercurial.gamepad1().dpadDown().onTrue(lift.goTo(0));
+        Mercurial.gamepad1().dpadDown().onTrue(lift.offset(-10));
         //overide fc
         Mercurial.gamepad1().start().onTrue(drive.overideFC());
         Mercurial.gamepad1().back().whileTrue(proxiedCommand(lift.retract()));
+        gamepad1.setLedColor(255, 0, 0, 999999999);
     }
 
     @Override

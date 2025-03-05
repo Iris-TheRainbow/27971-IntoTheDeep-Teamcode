@@ -84,7 +84,9 @@ public class extendo implements Subsystem {
     }
     public static boolean atTarget() { return (extendoEncoder.getCurrentPosition() >= (getTarget() - tollerence) || extendoEncoder.getCurrentPosition() <= (getTarget() + tollerence)); }
     public static void reset(){extendoEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); extendoEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);}
-
+    public static boolean extended(){
+        return liftTarget > 0;
+    }
     @NonNull
     public static Lambda update() {
         return new Lambda("update the extendo")

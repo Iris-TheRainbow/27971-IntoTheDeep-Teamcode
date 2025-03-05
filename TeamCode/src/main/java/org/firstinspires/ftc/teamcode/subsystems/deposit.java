@@ -79,14 +79,14 @@ public class deposit implements Subsystem {
     }
 
     private static void close(){ clawServo.setPosition(1); clawStates.setState(ClawState.CLOSED);}
-    private static void open(){ clawServo.setPosition(.8); clawStates.setState(ClawState.OPEN);}
+    private static void open(){ clawServo.setPosition(.7); clawStates.setState(ClawState.OPEN);}
 
     @NonNull
     public static Lambda wristDeposit() {
         return new Lambda("wrist flat")
                 .addRequirements(INSTANCE)
                 .setInit(() -> {
-                    setPosition(.65);
+                    setPosition(.7);
                     waiter.start(175);
                 })
                 .setFinish(() -> waiter.isDone());
@@ -132,7 +132,7 @@ public class deposit implements Subsystem {
         return new Lambda("wrist spec")
                 .addRequirements(INSTANCE)
                 .setInit(() -> {
-                    setPosition(.85);
+                    setPosition(.8);
                     waiter.start(300);
                 })
                 .setFinish(() -> waiter.isDone());
@@ -142,7 +142,7 @@ public class deposit implements Subsystem {
         return new Lambda("wrist spec")
                 .addRequirements(INSTANCE)
                 .setInit(() -> {
-                    setPosition(.5);
+                    setPosition(.54);
                     waiter.start(150);
                 })
                 .setFinish(() -> waiter.isDone());

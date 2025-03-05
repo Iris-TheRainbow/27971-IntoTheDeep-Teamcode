@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import static org.firstinspires.ftc.teamcode.roadrunner.SparkFunOTOSDrive.PARAMS;
-import static org.firstinspires.ftc.teamcode.util.SignedMath.signedSquared;
+import static org.firstinspires.ftc.teamcode.util.SignedMath.signedFunc;
 
 import androidx.annotation.NonNull;
 
@@ -11,7 +11,6 @@ import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -99,9 +98,9 @@ public class drive implements Subsystem {
         }
         public static void driveUpdate() {
                 // read the gamepads
-                double rightX = signedSquared(Mercurial.gamepad1().leftStickX().state());
-                double rightY = signedSquared(Mercurial.gamepad1().leftStickY().state());
-                double turn = signedSquared(Mercurial.gamepad1().rightStickX().state()) * turnNerf;
+                double rightX = signedFunc((x) -> Math.pow(x, 3), Mercurial.gamepad1().leftStickX().state());
+                double rightY = signedFunc((x) -> Math.pow(x, 3), Mercurial.gamepad1().leftStickY().state());
+                double turn = signedFunc((x) -> Math.pow(x, 4), Mercurial.gamepad1().rightStickX().state()) * turnNerf;
 
                 double heading = 0;//getHeading();
                 // Do the kinematics math

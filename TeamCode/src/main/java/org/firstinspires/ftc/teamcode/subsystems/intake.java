@@ -14,6 +14,7 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.function.DoubleSupplier;
 
 import dev.frozenmilk.dairy.cachinghardware.CachingServo;
 import dev.frozenmilk.dairy.core.dependency.Dependency;
@@ -92,6 +93,13 @@ public class intake implements Subsystem {
                 .setInterruptible(true);
     }
     @NonNull
+    public static Lambda wristRotateSupplier(DoubleSupplier pos){
+        return new Lambda("rotate the wrist")
+                .setRequirements(INSTANCE)
+                .setExecute(() -> { setWristRotation(pos.getAsDouble());})
+                .setInterruptible(true);
+    }
+    @NonNull
     public static Lambda autoWrist(){
         return new Lambda("rotate the wrist")
                 .setRequirements(INSTANCE)
@@ -104,8 +112,28 @@ public class intake implements Subsystem {
         return new Lambda("wrist flat")
                 .addRequirements(INSTANCE)
                 .setInit(() -> {
-                    setWristPosition(.87);
+                    setWristPosition(.9);
                     waiter.start(150);
+                })
+                .setFinish(() -> waiter.isDone());
+    }
+    @NonNull
+    public static Lambda wristVision() {
+        return new Lambda("wrist vision")
+                .addRequirements(INSTANCE)
+                .setInit(() -> {
+                    setWristPosition(.6);
+                    waiter.start(150);
+                })
+                .setFinish(() -> waiter.isDone());
+    }
+    @NonNull
+    public static Lambda wristGrab() {
+        return new Lambda("wrist flat")
+                .addRequirements(INSTANCE)
+                .setInit(() -> {
+                    setWristPosition(.9);
+                    waiter.start(100);
                 })
                 .setFinish(() -> waiter.isDone());
     }
@@ -115,7 +143,7 @@ public class intake implements Subsystem {
         return new Lambda("wrist flat")
                 .addRequirements(INSTANCE)
                 .setInit(() -> {
-                    setWristPosition(.7);
+                    setWristPosition(.65);
                     waiter.start(175);
                 })
                 .setFinish(() -> waiter.isDone());
@@ -126,7 +154,7 @@ public class intake implements Subsystem {
         return new Lambda("wrist down")
                 .addRequirements(INSTANCE)
                 .setInit(() -> {
-                    setWristPosition(.22);
+                    setWristPosition(.24);
                     waiter.start(350);
                 })
                 .setFinish(() -> waiter.isDone());

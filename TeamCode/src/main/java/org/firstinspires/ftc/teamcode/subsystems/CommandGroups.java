@@ -10,7 +10,7 @@ public class CommandGroups {
         return new Sequential(new Parallel(deposit.wristTransfer(),new Wait(.1), arm.armTransfer()),new Wait(.05), deposit.closeClaw(),new Wait(.05), intake.openClaw());
     }
     public static Command intake(){
-        return new Sequential(new Parallel(lift.goTo(0), extendo.goTo(485), intake.openClaw(), deposit.wristTransfer(), arm.armWait(), intake.wristExtend()), intake.wristIntake());
+        return new Sequential(new Parallel(lift.goTo(0), extendo.goTo(475), intake.openClaw(), deposit.wristTransfer(), arm.armWait(), intake.wristExtend()), intake.wristIntake());
     }
     public static Command intakeAuto(){
         return new Sequential(new Parallel(extendo.goTo(430), intake.openClaw(), deposit.wristTransfer(), arm.armWait(), intake.wristExtend()), intake.wristIntake());
@@ -28,13 +28,13 @@ public class CommandGroups {
         return new Sequential(new Parallel(prepDepo(), lift.goTo(ticks)), arm.armUp());
     }
     public static Command liftHigh(){
-        return liftGoTo(1400);
+        return liftGoTo(1500);
     }
     public static Command liftMedium(){
-        return new Parallel(lift.goTo(300), deposit.prepSpec(), arm.armUp());
+        return new Parallel(lift.goTo(580), deposit.wristSepc(), arm.armUp());
     }
     public static Command depositSpec(){
-        return new Sequential(deposit.wristSepc(), deposit.openClaw());
+        return new Sequential(deposit.wristSepc(), lift.goTo(250), deposit.openClaw());
     }
     public static Command liftHang(){
         return new Parallel(lift.goTo(1700), deposit.wristTransfer(), arm.armWait(), extendo.goTo(0), intake.wristTransfer());

@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.BooleanSupplier;
 
 import dev.frozenmilk.dairy.core.wrapper.Wrapper;
 import dev.frozenmilk.mercurial.Mercurial;
@@ -58,5 +59,15 @@ public class commandUtil {
         public Set<Wrapper.OpModeState> getRunStates() {
             return runStates;
         }
+    }
+    public static Lambda ifElse(BooleanSupplier bool, Command iff, Command elsee){
+        Command chosen;
+        if (bool.getAsBoolean()){
+            chosen = iff;
+        } else {
+            chosen = elsee;
+        }
+        return new Lambda("ifElse:" + chosen.toString())
+                .setInit(chosen::schedule);
     }
 }

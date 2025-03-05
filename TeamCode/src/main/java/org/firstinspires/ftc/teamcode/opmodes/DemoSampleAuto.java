@@ -1,27 +1,14 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
 import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.intakeAuto;
-import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.intakeAutoShort;
 import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.liftHigh;
-import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.prepDepo;
 import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.retract;
 import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.transfer;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.IdentityPoseMap;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.TranslationalVelConstraint;
-import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.teamcode.roadrunner.SparkFunOTOSDrive;
-import org.firstinspires.ftc.teamcode.roadrunner.TrajectoryCommandBuilder;
-import org.firstinspires.ftc.teamcode.roadrunner.WavedashMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.CommandGroups;
 import org.firstinspires.ftc.teamcode.subsystems.Wavedash;
 import org.firstinspires.ftc.teamcode.subsystems.arm;
@@ -30,25 +17,13 @@ import org.firstinspires.ftc.teamcode.subsystems.extendo;
 import org.firstinspires.ftc.teamcode.subsystems.intake;
 import org.firstinspires.ftc.teamcode.subsystems.lift;
 import org.firstinspires.ftc.teamcode.subsystems.subAuto;
-import org.firstinspires.ftc.teamcode.util.LoopTimes;
-import org.firstinspires.ftc.teamcode.util.MercurialAction;
-import org.firstinspires.ftc.teamcode.util.PidToPointBuilder;
-import org.firstinspires.ftc.teamcode.util.SilkRoad;
-
 import org.firstinspires.ftc.teamcode.util.BulkRead;
+import org.firstinspires.ftc.teamcode.util.LoopTimes;
 import org.firstinspires.ftc.teamcode.util.SlothFinder;
 import org.firstinspires.ftc.teamcode.util.Telem;
 
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
-import dev.frozenmilk.dairy.core.wrapper.Wrapper;
 import dev.frozenmilk.mercurial.Mercurial;
 import dev.frozenmilk.mercurial.commands.Command;
-import dev.frozenmilk.mercurial.commands.Lambda;
-import dev.frozenmilk.mercurial.commands.StackUnwinder;
-import dev.frozenmilk.mercurial.commands.groups.Parallel;
 import dev.frozenmilk.mercurial.commands.groups.Sequential;
 import dev.frozenmilk.mercurial.commands.util.Wait;
 
@@ -64,7 +39,7 @@ import dev.frozenmilk.mercurial.commands.util.Wait;
 @LoopTimes.Attach
 @SlothFinder.Attach
 @Telem.Attach
-public class AdvancedSampleAuto extends OpMode {
+public class DemoSampleAuto extends OpMode {
     private final Pose2d initialPose = new Pose2d(-36, -62.5, Math.toRadians(180));
     private final Pose2d depositSpot = new Pose2d(-53, -55, Math.toRadians(230));
     private Command intakeSample(){
@@ -112,32 +87,8 @@ public class AdvancedSampleAuto extends OpMode {
                 .stopAndAdd(new Sequential(intakeAuto(), intake.wristRotate(.7), new Wait(.2), intake.closeClaw(), new Wait(.15), intake.wristRotate(.5)))
                 .pidTo(depositSpot)
                 .duringLast(transferAndLift())
-
-                //cycle4
-                .pidTo(new Pose2d(-44, -13, Math.toRadians(180)), 20, 999) //waypoint so i dont hit the leg
-                .duringLast(deposit.openClaw())
-                .pidTo(new Pose2d(-30, -9, Math.toRadians(180)))
-                .duringLast(new Sequential(new Wait(.5), extendo.goTo(465)))
-                .stopAndAdd(intakeSample())
-                .stopAndAdd(intake.wristTransfer())
-                .pidTo(new Pose2d(-44, -15, Math.toRadians(180)), 20, 999) //waypoint again
-                .duringLast(extendo.goTo(0))
-                .pidTo(depositSpot)
-                .duringLast(transferAndLift())
                 .stopAndAdd(deposit.openClaw())
-
-                //cycle5
-                .pidTo(new Pose2d(-44, -13, Math.toRadians(180)), 20, 999) //waypoint so i dont hit the leg
-                .pidTo(new Pose2d(-34, -9, Math.toRadians(180)))
-                .duringLast(extendo.goTo(465))
-                .stopAndAdd(intakeSample())
-                .stopAndAdd(intake.wristTransfer())
-                .pidTo(new Pose2d(-44, -15, Math.toRadians(180)), 20, 999) //waypoint again
-                .duringLast(extendo.goTo(0))
-                .pidTo(depositSpot)
-                .duringLast(transferAndLift())
-                .stopAndAdd(deposit.openClaw())
-
+                .stopAndAdd(new Sequential(arm.armWait(), retract()))
                 //park
                 .pidTo(new Pose2d(-44, -13, Math.toRadians(180)), 20, 999) //waypoint so i dont hit the leg
                 .duringLast(new Sequential(new Wait(.1), lift.goTo(100)))

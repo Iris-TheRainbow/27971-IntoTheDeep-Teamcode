@@ -63,7 +63,7 @@ public class arm implements Subsystem {
         return new Lambda("arm stow")
                 .addRequirements(INSTANCE)
                 .setInit(() -> {
-                    setPosition(.08);
+                    setPosition(.1);
                     waiter.start(75);
                 })
                 .setFinish(() -> waiter.isDone());
@@ -84,11 +84,22 @@ public class arm implements Subsystem {
         return new Lambda("arm up")
                 .addRequirements(INSTANCE)
                 .setInit(() -> {
-                    setPosition(.43);
+                    setPosition(.45);
                     waiter.start(200);
                 })
                 .setFinish(() -> waiter.isDone());
     }
+    @NonNull
+    public static Lambda armSpec(){
+        return new Lambda("arm up")
+                .addRequirements(INSTANCE)
+                .setInit(() -> {
+                    setPosition(.5);
+                    waiter.start(200);
+                })
+                .setFinish(() -> waiter.isDone());
+    }
+
     @NonNull
     public static Lambda armExtend(){
         return new Lambda("arm up")

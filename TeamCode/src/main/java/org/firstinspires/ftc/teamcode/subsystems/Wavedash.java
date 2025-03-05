@@ -22,6 +22,7 @@ import org.firstinspires.ftc.teamcode.roadrunner.Drive;
 import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.SparkFunOTOSDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.TrajectoryCommandBuilder;
+import org.firstinspires.ftc.teamcode.util.LazyPose2d;
 import org.firstinspires.ftc.teamcode.util.PidToPointBuilder;
 import org.firstinspires.ftc.teamcode.util.Telem;
 
@@ -35,6 +36,7 @@ import java.util.Iterator;
 import java.util.concurrent.Callable;
 
 import java.util.concurrent.Future;
+import java.util.function.DoubleSupplier;
 
 import dev.frozenmilk.dairy.core.dependency.Dependency;
 import dev.frozenmilk.dairy.core.dependency.annotation.SingleAnnotation;
@@ -138,12 +140,15 @@ public class Wavedash implements Subsystem {
                     }
                 });
     }
+
     @NonNull
-    public static Lambda PIDToPoint(Pose2d pose, double translationalAccuracy, double headingAccuracy) {
-        Pose2dDual<Time> target = Pose2dDual.constant(pose, 3);
+    public static Lambda PIDToPoint(DoubleSupplier x, DoubleSupplier y, DoubleSupplier h, double translationalAccuracy, double headingAccuracy) {
+        LazyPose2d pose = new LazyPose2d(x, y, h);
         return new Lambda("PID to last set target")
                 .addRequirements(INSTANCE)
+                .setInit(pose::evaluate)
                 .setExecute(() -> {
+                    Pose2dDual<Time> target = Pose2dDual.constant(pose.value(), 3);
                     double translationalError = target.value().minusExp(RRDrive.pose).position.norm();
                     double headingError = Math.abs(Math.toDegrees(target.value().minusExp(RRDrive.pose).heading.toDouble()));
                     if (!(translationalError < .5 && headingError <  1)) {
@@ -153,6 +158,7 @@ public class Wavedash implements Subsystem {
                     }
                 })
                 .setFinish(() -> {
+                    Pose2dDual<Time> target = Pose2dDual.constant(pose.value(), 3);
                     double translationalError = target.value().minusExp(RRDrive.pose).position.norm();
                     double headingError = Math.abs(Math.toDegrees(target.value().minusExp(RRDrive.pose).heading.toDouble()));
                     return  translationalError < translationalAccuracy && headingError <  headingAccuracy;
@@ -160,14 +166,10 @@ public class Wavedash implements Subsystem {
                 .setEnd((interupted) -> RRDrive.setDrivePowers(new PoseVelocity2d(new Vector2d(0.0, 0.0), 0.0)));
     }
 
-    @NonNull
-    public static Lambda PIDToPoint(Pose2d pose){
-        return PIDToPoint(pose, 1, 3);
-    }
 
     public static PidToPointBuilder p2pBuilder(Pose2d pose){
         setInitialPose(pose);
-        return new PidToPointBuilder();
+        return new PidToPointBuilder(pose);
     }
 
      class ThreadedActionBuilder{

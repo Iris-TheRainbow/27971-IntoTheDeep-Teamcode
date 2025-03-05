@@ -24,7 +24,8 @@ import dev.frozenmilk.mercurial.subsystems.Subsystem;
 import dev.frozenmilk.mercurial.subsystems.SubsystemObjectCell;
 import kotlin.annotation.MustBeDocumented;
 
-public class template implements Subsystem {
+public class
+template implements Subsystem {
     public static final template INSTANCE = new template();
 
     private template() { }
