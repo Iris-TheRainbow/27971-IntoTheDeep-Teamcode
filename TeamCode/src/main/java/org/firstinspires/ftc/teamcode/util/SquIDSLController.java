@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.util;
 
-import static org.firstinspires.ftc.teamcode.util.SignedMath.signedSqrt;
-import static java.lang.Double.isNaN;
 
 public class SquIDSLController {
     private double kP, kD , kS, minkL, maxkL;
@@ -26,7 +24,7 @@ public class SquIDSLController {
         if (Double.isNaN(L)){
             L = 0;
         }
-        return signedSqrt(kP * error) + kD * errorVelocity + kS + L;
+        return MathLibKt.signedFunc(Math::sqrt, kP * error) + kD * errorVelocity + kS + L;
     }
     public void setConstants(double kP, double kD, double kS, double minkL, double maxkL, int maxkLPose){
         this.kP = kP;

@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.util;
 
-import static org.firstinspires.ftc.teamcode.util.SignedMath.signedSqrt;
+import static org.firstinspires.ftc.teamcode.util.MathLibKt.signedFunc;
 
 public class PDFController {
 
@@ -194,7 +194,7 @@ public class PDFController {
         totalError += period * (setPoint - measuredValue);
 
         // returns u(t)
-        return signedSqrt(kP * errorVal_p) + kD * errorVal_v + kF * setPoint;
+        return signedFunc(Math::sqrt,kP * errorVal_p) + kD * errorVal_v + kF * setPoint;
     }
 
     public void setPDF(double kp, double kd, double kf) {

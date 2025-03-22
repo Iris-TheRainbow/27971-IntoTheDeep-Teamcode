@@ -53,7 +53,7 @@ public class SpecimineAuto extends OpMode {
     public Pose2d specDepo = new Pose2d(0, -34, Math.toRadians(90));
     public Pose2d slideSpec = new Pose2d(-2, -34, Math.toRadians(90));
     public Pose2d prepDepo = new Pose2d(0, -40, Math.toRadians(90));
-    public Pose2d specIntkae =  new Pose2d(19.5,-58, Math.toRadians(180));
+    public Pose2d specIntake =  new Pose2d(19.5,-58, Math.toRadians(180));
 
     @Override
     public void init() {
@@ -74,33 +74,16 @@ public class SpecimineAuto extends OpMode {
                 .pidTo(new Pose2d(53, -14, Math.toRadians(270)), 6, 9999)
                 //second push
                 .pidTo(new Pose2d(52, -52, Math.toRadians(270)), 4, 9999)
-                //.pidTo(new Pose2d(46, -14, Math.toRadians(270)), 8, 9999)
-                //.pidTo(new Pose2d(60, -14, Math.toRadians(270)), 6, 9999)
-                //.pidTo(new Pose2d(58, -52, Math.toRadians(270)), 4, 9999)
-                //scoring
-                .pidTo(specIntkae)
+
+                .repeat(5, -1)
+                .pidTo(specIntake)
                 .waitSeconds(1.0)
                 .stopAndAdd(intakeSample())
                 .pidTo(prepDepo)
                 .duringLast(transferAndLift())
-                .pidTo(new Pose2d(0-3, -34.5, Math.toRadians(90)))
+                .pidTo(new Pose2d(0, -34.5, Math.toRadians(90)))
                 .stopAndAdd(depositSpec())
-                .pidTo(specIntkae)
-                .stopAndAdd(intakeSample())
-                .pidTo(prepDepo)
-                .duringLast(transferAndLift())
-                .pidTo(specDepo)
-                .pidTo(new Pose2d(0-2, -34.5, Math.toRadians(90)))
-                .stopAndAdd(depositSpec())
-                .stopAndAdd(depositSpec())
-                .pidTo(specIntkae)
-                .stopAndAdd(intakeSample())
-                .pidTo(prepDepo)
-                .duringLast(transferAndLift())
-                .pidTo(new Pose2d(0-1, -34.5, Math.toRadians(90)))
-                .stopAndAdd(depositSpec())
-                .pidTo(specIntkae)
-                .stopAndAdd(intakeSample())
+                .stopRepeat()
                 .build();
     }
     @Override

@@ -49,7 +49,7 @@ public class LoopTimes implements Feature {
         telemetry.addData("Average Loop Hz", averageHz);
 
         lastTime = currentTime;
-        loops += 1;
+        loops ++;
 
     }
 

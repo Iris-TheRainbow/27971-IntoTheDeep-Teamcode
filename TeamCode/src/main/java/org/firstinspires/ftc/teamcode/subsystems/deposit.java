@@ -101,6 +101,7 @@ public class deposit implements Subsystem {
                 })
                 .setFinish(() -> waiter.isDone());
     }
+
     @NonNull
     public static Lambda toggleClaw(){  
         return new Lambda("claw toggle")

@@ -14,14 +14,14 @@ import dev.frozenmilk.dairy.core.Feature;
 import dev.frozenmilk.dairy.core.dependency.Dependency;
 import dev.frozenmilk.dairy.core.dependency.VoidDependency;
 import dev.frozenmilk.dairy.core.wrapper.Wrapper;
-import dev.frozenmilk.sinister.loading.SinisterClassLoader;
+//import dev.frozenmilk.sinister.loaders.SlothClassLoader;
 
 public class SlothFinder implements Feature {
     private String loadStatus = "Normal load";
     private boolean isSloth = false;
     @Override
     public void preUserInitHook(@NonNull Wrapper opMode){
-        if (getClass().getClassLoader() instanceof SinisterClassLoader){
+        if (true/*getClass().getClassLoader() instanceof SlothClassLoader*/){
             loadStatus = "SLOTHLOADED";
             isSloth = true;
         }

@@ -18,7 +18,9 @@ import org.firstinspires.ftc.teamcode.subsystems.intake;
 import org.firstinspires.ftc.teamcode.subsystems.lift;
 import org.firstinspires.ftc.teamcode.subsystems.subAuto;
 import org.firstinspires.ftc.teamcode.util.BulkRead;
+import org.firstinspires.ftc.teamcode.util.HeadingInterpolation;
 import org.firstinspires.ftc.teamcode.util.LoopTimes;
+import org.firstinspires.ftc.teamcode.util.PidToPointBuilderKt;
 import org.firstinspires.ftc.teamcode.util.SlothFinder;
 import org.firstinspires.ftc.teamcode.util.Telem;
 
@@ -42,22 +44,19 @@ import dev.frozenmilk.mercurial.commands.util.Wait;
 public class SampleAutoNoPartnerAuto extends OpMode {
     private final Pose2d initialPose = new Pose2d(-36, -62.5, Math.toRadians(180));
     private final Pose2d depositSpot = new Pose2d(-53, -55, Math.toRadians(230));
+
     private Command intakeSample(){
         return new Sequential(CommandGroups.intake(), intake.closeClaw(), new Wait(.15));
     }
     private Command intakeSampleShort(){
         return new Sequential(CommandGroups.intakeAutoShort(), intake.closeClaw(), new Wait(.15));
     }
-    private Command transferAndLift(){
-        return new Sequential(retract(), transfer(), liftHigh());
-    }
+    private Command transferAndLift(){ return new Sequential(retract(), transfer(), liftHigh()); }
+    private Command driveCommand;
 
     @Override
     public void init() {
-    }
-    @Override
-    public void start(){
-        Wavedash.p2pBuilder(initialPose)
+        driveCommand = Wavedash.p2pBuilder(initialPose)
                 .pidTo(depositSpot)
                 .duringLast(liftHigh())
                 //Partner cycle
@@ -96,15 +95,15 @@ public class SampleAutoNoPartnerAuto extends OpMode {
                 .pidTo(depositSpot)
                 .duringLast(transferAndLift())
 
-                //cycle4
-                .pidTo(new Pose2d(-44, -13, Math.toRadians(180)), 20, 999) //waypoint so i dont hit the leg
+                //sub cycles
+                .repeat(2)
+                .splineToTangentialHeading(new Pose2d(-34, -9, Math.toRadians(180)), Math.toRadians(180), 4, 1, 3)
                 .duringLast(deposit.openClaw())
-                .pidTo(new Pose2d(-30, -9, Math.toRadians(180)))
                 .duringLast(new Sequential(new Wait(.5), extendo.goTo(465)), intake.wristVision())
                 //vision align
                 .waitSeconds(.5)
                 .stopAndAdd(subAuto.doVision())
-                .pidRealitive(subAuto.xOffset(), subAuto.yOffset(), () -> Math.toRadians(180))
+                .pidRealtive(subAuto.xOffset(), subAuto.yOffset(), () -> Math.toRadians(180))
                 .stopAndAdd(intake.openClaw())
                 .duringLast( new Sequential(intake.wristGrab(), intake.closeClaw(), new Wait(.15), intake.wristTransfer()))
                 //intake and continue
@@ -112,34 +111,19 @@ public class SampleAutoNoPartnerAuto extends OpMode {
                 .stopAndAdd(intake.wristTransfer())
                 .pidTo(new Pose2d(-44, -15, Math.toRadians(180)), 20, 999) //waypoint again
                 .duringLast(extendo.goTo(0))
-                .pidTo(depositSpot)
+                .splineToTangentialHeading(depositSpot, depositSpot.heading.toDouble(), 4, 1, 3)
                 .duringLast(transferAndLift())
                 .stopAndAdd(deposit.openClaw())
-
-                //cycle5
-                .pidTo(new Pose2d(-44, -13, Math.toRadians(180)), 20, 999) //waypoint so i dont hit the leg
-                .pidTo(new Pose2d(-34, -9, Math.toRadians(180)))
-                .duringLast(extendo.goTo(465), intake.wristVision())
-                //vision align
-                .stopAndAdd(subAuto.doVision())
-                .waitSeconds(.5)
-                .pidRealitive(subAuto.xOffset(), subAuto.yOffset(), () -> Math.toRadians(180))
-                .stopAndAdd(intake.openClaw())
-                .duringLast( new Sequential(intake.wristGrab(), intake.closeClaw(), new Wait(.15), intake.wristTransfer()))
-                //intake and continue
-                .stopAndAdd(intakeSample())
-                .stopAndAdd(intake.wristTransfer())
-                .pidTo(new Pose2d(-44, -15, Math.toRadians(180)), 20, 999) //waypoint again
-                .duringLast(extendo.goTo(0))
-                .pidTo(depositSpot)
-                .duringLast(transferAndLift())
-                .stopAndAdd(deposit.openClaw())
+                .stopRepeat()
 
                 //park
-                .pidTo(new Pose2d(-44, -13, Math.toRadians(180)), 20, 999) //waypoint so i dont hit the leg
-                .duringLast(new Sequential(new Wait(.1), lift.goTo(100)))
-                .pidTo(new Pose2d(-16, -9, Math.toRadians(0)))
-                .build().schedule();
+                .splineToTangentialHeading(new Pose2d(-16, -9, Math.toRadians(0)), 0, 4, 1, 3)
+                .afterDisp(5, new Sequential(new Wait(.1), lift.goTo(100)))
+                .build();
+    }
+    @Override
+    public void start(){
+        driveCommand.schedule();
     }
 
     @Override

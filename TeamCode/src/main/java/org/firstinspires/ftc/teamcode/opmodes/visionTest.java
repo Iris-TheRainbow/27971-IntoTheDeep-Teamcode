@@ -67,7 +67,7 @@ public class visionTest extends OpMode {
         Wavedash.p2pBuilder(new Pose2d(0,0,Math.toRadians(180)))
                 .stopAndAdd(extendo.goTo(465), intake.wristVision())
                 .waitSeconds(2)
-                .pidRealitive(subAuto.xOffset(), subAuto.yOffset(), () -> 0)
+                .pidRealtive(subAuto.xOffset(), subAuto.yOffset(), () -> 0)
                 .stopAndAdd(CommandGroups.intake())
                 .build().schedule();
     }

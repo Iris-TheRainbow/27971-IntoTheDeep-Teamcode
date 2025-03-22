@@ -49,10 +49,10 @@ class HolonomicSquidController(
         return targetVelTarget +
                 PoseVelocity2d(
                     Vector2d(
-                        axialPosGain * SignedMath.signedSqrt(error.position.x),
-                        lateralPosGain * SignedMath.signedSqrt(error.position.y),
+                        axialPosGain * signedFunc(Math::sqrt, error.position.x),
+                        lateralPosGain * signedFunc(Math::sqrt, error.position.y),
                     ),
-                    headingGain * SignedMath.signedSqrt(error.heading.log()),
+                    headingGain * signedFunc(Math::sqrt, error.heading.log()),
                 ) +
                 PoseVelocity2d(
                     Vector2d(

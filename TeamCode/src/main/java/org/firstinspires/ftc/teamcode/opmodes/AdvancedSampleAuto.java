@@ -1,27 +1,14 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
 import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.intakeAuto;
-import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.intakeAutoShort;
 import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.liftHigh;
-import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.prepDepo;
 import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.retract;
 import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.transfer;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.IdentityPoseMap;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.TranslationalVelConstraint;
-import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.teamcode.roadrunner.SparkFunOTOSDrive;
-import org.firstinspires.ftc.teamcode.roadrunner.TrajectoryCommandBuilder;
-import org.firstinspires.ftc.teamcode.roadrunner.WavedashMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.CommandGroups;
 import org.firstinspires.ftc.teamcode.subsystems.Wavedash;
 import org.firstinspires.ftc.teamcode.subsystems.arm;
@@ -29,26 +16,14 @@ import org.firstinspires.ftc.teamcode.subsystems.deposit;
 import org.firstinspires.ftc.teamcode.subsystems.extendo;
 import org.firstinspires.ftc.teamcode.subsystems.intake;
 import org.firstinspires.ftc.teamcode.subsystems.lift;
-import org.firstinspires.ftc.teamcode.subsystems.subAuto;
 import org.firstinspires.ftc.teamcode.util.LoopTimes;
-import org.firstinspires.ftc.teamcode.util.MercurialAction;
-import org.firstinspires.ftc.teamcode.util.PidToPointBuilder;
-import org.firstinspires.ftc.teamcode.util.SilkRoad;
 
 import org.firstinspires.ftc.teamcode.util.BulkRead;
 import org.firstinspires.ftc.teamcode.util.SlothFinder;
 import org.firstinspires.ftc.teamcode.util.Telem;
 
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
-import dev.frozenmilk.dairy.core.wrapper.Wrapper;
 import dev.frozenmilk.mercurial.Mercurial;
 import dev.frozenmilk.mercurial.commands.Command;
-import dev.frozenmilk.mercurial.commands.Lambda;
-import dev.frozenmilk.mercurial.commands.StackUnwinder;
-import dev.frozenmilk.mercurial.commands.groups.Parallel;
 import dev.frozenmilk.mercurial.commands.groups.Sequential;
 import dev.frozenmilk.mercurial.commands.util.Wait;
 
@@ -82,7 +57,7 @@ public class AdvancedSampleAuto extends OpMode {
     }
     @Override
     public void start(){
-        Wavedash.p2pBuilder(initialPose)
+        Wavedash.p2pBuilder(hardwareMap, initialPose)
                 .pidTo(depositSpot)
                 .duringLast(liftHigh())
 
