@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 import org.firstinspires.ftc.teamcode.subsystems.Wavedash;
 import org.firstinspires.ftc.teamcode.subsystems.arm;
 import org.firstinspires.ftc.teamcode.subsystems.deposit;
+import org.firstinspires.ftc.teamcode.subsystems.drive;
 import org.firstinspires.ftc.teamcode.subsystems.extendo;
 import org.firstinspires.ftc.teamcode.subsystems.intake;
 import org.firstinspires.ftc.teamcode.subsystems.lift;
@@ -22,12 +23,12 @@ import dev.frozenmilk.mercurial.commands.Command;
 @arm.Attach
 @intake.Attach
 @deposit.Attach
-@Wavedash.Attach
+@drive.Attach
 public class backAndForth extends OpMode {
     private Command driveCommand;
     @Override
     public void init() {
-        driveCommand = Wavedash.p2pBuilder(hardwareMap, new Pose2d(0,0,0))
+        driveCommand = drive.p2p(new Pose2d(0,0,0))
                 .stopAndAdd(() -> RobotLog.i("begin pinpoint 5in back and forth"))
                 .repeat(10)
                 .stopAndAdd(() -> RobotLog.v("pinpoint to 5in"))

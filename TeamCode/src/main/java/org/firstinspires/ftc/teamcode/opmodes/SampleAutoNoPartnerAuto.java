@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.subsystems.CommandGroups;
 import org.firstinspires.ftc.teamcode.subsystems.Wavedash;
 import org.firstinspires.ftc.teamcode.subsystems.arm;
 import org.firstinspires.ftc.teamcode.subsystems.deposit;
+import org.firstinspires.ftc.teamcode.subsystems.drive;
 import org.firstinspires.ftc.teamcode.subsystems.extendo;
 import org.firstinspires.ftc.teamcode.subsystems.intake;
 import org.firstinspires.ftc.teamcode.subsystems.lift;
@@ -36,7 +37,7 @@ import dev.frozenmilk.mercurial.commands.util.Wait;
 @intake.Attach
 @lift.Attach
 @extendo.Attach
-@Wavedash.Attach
+@drive.Attach
 @BulkRead.Attach
 @LoopTimes.Attach
 @SlothFinder.Attach
@@ -56,7 +57,7 @@ public class SampleAutoNoPartnerAuto extends OpMode {
 
     @Override
     public void init() {
-        driveCommand = Wavedash.p2pBuilder(initialPose)
+        drive.p2p(initialPose)
                 .pidTo(depositSpot)
                 .duringLast(liftHigh())
                 //Partner cycle

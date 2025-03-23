@@ -70,8 +70,7 @@ public class TeleOp extends OpMode {
         Mercurial.gamepad1().dpadUp().onTrue(lift.offset(10));
         //hang retract
         Mercurial.gamepad1().dpadDown().onTrue(lift.offset(-10));
-        //overide fc
-        Mercurial.gamepad1().start().onTrue(drive.overideFC());
+
         Mercurial.gamepad1().back().whileTrue(proxiedCommand(lift.retract()));
         gamepad1.setLedColor(255, 0, 0, 999999999);
     }

@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 import org.firstinspires.ftc.teamcode.subsystems.Wavedash;
 import org.firstinspires.ftc.teamcode.subsystems.arm;
 import org.firstinspires.ftc.teamcode.subsystems.deposit;
+import org.firstinspires.ftc.teamcode.subsystems.drive;
 import org.firstinspires.ftc.teamcode.subsystems.extendo;
 import org.firstinspires.ftc.teamcode.subsystems.intake;
 import org.firstinspires.ftc.teamcode.subsystems.lift;
@@ -23,7 +24,7 @@ import dev.frozenmilk.mercurial.commands.Command;
 @arm.Attach
 @intake.Attach
 @deposit.Attach
-@Wavedash.Attach
+@drive.Attach
 public class spin extends OpMode {
     private Command driveCommand;
     @Override
@@ -33,7 +34,7 @@ public class spin extends OpMode {
     @Override
     public void start(){
         RobotLog.a("fuck this shit 2 the fuckening");
-        driveCommand = Wavedash.p2pBuilder(hardwareMap, new Pose2d(0,0,0))
+        driveCommand = drive.p2p(new Pose2d(0,0,0))
                 .stopAndAdd(() -> RobotLog.i("begin pinpoint pi/2 spin test"))
                 .stopAndAdd(() -> RobotLog.v("pinpoint to pi/2"))
                 .pidTo(new Pose2d(0, 0, Math.PI/2))

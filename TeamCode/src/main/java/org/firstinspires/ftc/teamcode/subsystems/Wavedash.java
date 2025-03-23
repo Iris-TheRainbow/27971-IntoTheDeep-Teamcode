@@ -56,13 +56,10 @@ public class Wavedash implements Subsystem {
     public void setDependency(@NonNull Dependency<?> dependency) { this.dependency = dependency; }
     private static Pose2d initialPose = new Pose2d(0, 0, 0);
     private static SparkFunOTOSDrive RRDrive;
-
-
     private static Canvas canvas;
     private static final ArrayList<Action> actions = new ArrayList<Action>();
     private static HardwareMap hwmap;
-    private static Telemetry telem;
-    private static boolean debug = false;
+
 
     @Override
     public void preUserInitHook(@NonNull Wrapper opMode) {
@@ -71,16 +68,6 @@ public class Wavedash implements Subsystem {
         telem = opMode.getOpMode().telemetry;
         setDefaultCommand(PIDToLast());
         canvas = new Canvas();
-    }
-
-    @Override
-    public void postUserLoopHook(@NonNull Wrapper opMode) {
-//        Telem.telemPacket.fieldOverlay().getOperations().addAll(canvas.getOperations());
-//        Iterator<Action> iter = actions.iterator();
-//        while (iter.hasNext() && !Thread.currentThread().isInterrupted()) {
-//            Action action = iter.next();
-//            if (!action.run(Telem.telemPacket)) iter.remove();
-//        }
     }
 
     @Override
@@ -109,12 +96,6 @@ public class Wavedash implements Subsystem {
     private static SparkFunOTOSDrive GenerateRRDrive(HardwareMap hwmap){
         return new SparkFunOTOSDrive(hwmap, Wavedash.initialPose);
     }
-
-//    public static TrajectoryCommandBuilder commandBuilder(Pose2d initialPose){
-//        Wavedash.initialPose = initialPose;
-//        RRDrive = GenerateRRDrive(hwmap);
-//        return RRDrive.commandBuilder(initialPose);
-//    }
 
     public static TrajectoryActionBuilder actionBuilder(Pose2d initialPose) {
         Wavedash.initialPose = initialPose;
@@ -169,38 +150,6 @@ public class Wavedash implements Subsystem {
     public static PidToPointBuilderKt p2pBuilder(HardwareMap hwmap, Pose2d pose){
         setInitialPose(hwmap, pose);
         return new PidToPointBuilderKt(pose, Wavedash::PIDToPoint, Wavedash::getPose);
-    }
-
-     class ThreadedActionBuilder{
-        private ActionBuilderWorker worker;
-        private Future<Action> trajFuture;
-        private class ActionBuilderWorker implements Callable<Action>  {
-            private TrajectoryActionBuilder tab;
-            public ActionBuilderWorker(TrajectoryActionBuilder tab){
-                this.tab = tab;
-            }
-            @Override
-            public Action call() throws Exception {
-                return tab.build();
-            }
-
-        }
-        public ThreadedActionBuilder(TrajectoryActionBuilder tab){
-            worker = new ActionBuilderWorker(tab);
-            trajFuture = ThreadPool.getDefault().submit(worker);
-        }
-
-        public boolean isDone(){
-            return trajFuture.isDone();
-        }
-
-        public Action get() {
-            try {
-                return trajFuture.get();
-            } catch (Exception e){
-                return null;
-            }
-        }
     }
 
 }

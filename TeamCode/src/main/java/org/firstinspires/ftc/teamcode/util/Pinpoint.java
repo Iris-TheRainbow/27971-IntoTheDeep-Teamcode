@@ -24,6 +24,7 @@ package org.firstinspires.ftc.teamcode.util;
 
 import static com.qualcomm.robotcore.util.TypeConversion.byteArrayToInt;
 
+import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.hardware.lynx.LynxI2cDeviceSynch;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchDevice;
@@ -51,7 +52,12 @@ import java.util.Arrays;
 )
 
 public class Pinpoint extends I2cDeviceSynchDevice<I2cDeviceSynchSimple> {
-
+    public static Pose2d pinpointToRRPose(Pose2D pose){
+        return new Pose2d(pose.getX(DistanceUnit.INCH), pose.getY(DistanceUnit.INCH), pose.getHeading(AngleUnit.RADIANS));
+    }
+    public static Pose2D rrToPinpointPose(Pose2d pose){
+        return new Pose2D(DistanceUnit.INCH, pose.position.x, pose.position.y, AngleUnit.RADIANS, pose.heading.toDouble());
+    }
     private int deviceStatus   = 0;
     private int loopTime       = 0;
     private int xEncoderValue  = 0;
