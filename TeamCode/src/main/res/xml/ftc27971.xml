@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<Robot type="FirstInspires-FTC">
+    <LynxUsbDevice name="Control Hub Portal" serialNumber="(embedded)" parentModuleAddress="173">
+        <LynxModule name="Control Hub" port="173">
+            <goBILDA5202SeriesMotor name="leftFront" port="0" />
+            <goBILDA5202SeriesMotor name="rightFront" port="1" />
+            <goBILDA5202SeriesMotor name="leftBack" port="2" />
+            <goBILDA5202SeriesMotor name="rightBack" port="3" />
+            <Servo name="depositWristRight" port="0" />
+            <Servo name="depositWristLeft" port="1" />
+            <Servo name="armRight" port="2" />
+            <Servo name="armLeft" port="3" />
+            <Servo name="intakeWristLeft" port="4" />
+            <Servo name="intakeWristRight" port="5" />
+            <LynxEmbeddedIMU name="imu" port="0" bus="0" />
+            <SparkFunOTOS2 name="otos" port="0" bus="3" />
+            <goBILDAPinpoint name="pinpoint" port="0" bus="1" />
+        </LynxModule>
+    </LynxUsbDevice>
+    <Webcam name="cam" serialNumber="2020032501" />
+    <LynxUsbDevice name="Expansion Hub Portal 1" serialNumber="DQ3M2JQ6" parentModuleAddress="2">
+        <LynxModule name="Expansion Hub 2" port="2">
+            <goBILDA5202SeriesMotor name="liftRight" port="0" />
+            <goBILDA5202SeriesMotor name="liftLeft" port="1" />
+            <goBILDA5202SeriesMotor name="liftLeft2" port="2" />
+            <goBILDA5202SeriesMotor name="extendo" port="3" />
+            <Servo name="intakeRotate" port="0" />
+            <Servo name="intakeClaw" port="1" />
+            <Servo name="depositClaw" port="2" />
+            <LynxEmbeddedIMU name="imu 1" port="0" bus="0" />
+        </LynxModule>
+    </LynxUsbDevice>
+</Robot>
