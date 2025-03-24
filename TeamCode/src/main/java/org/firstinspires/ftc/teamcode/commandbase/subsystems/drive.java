@@ -29,7 +29,7 @@ import org.firstinspires.ftc.teamcode.pathing.Evaluation;
 import org.firstinspires.ftc.teamcode.util.LazyPose2d;
 import org.firstinspires.ftc.teamcode.util.MathLibKt;
 import org.firstinspires.ftc.teamcode.pathing.PidToPointBuilderKt;
-import org.firstinspires.ftc.teamcode.util.Pinpoint;
+import org.firstinspires.ftc.teamcode.util.drivers.Pinpoint;
 import org.firstinspires.ftc.teamcode.util.features.Telem;
 
 import java.lang.annotation.ElementType;

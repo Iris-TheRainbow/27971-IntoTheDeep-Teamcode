@@ -1,8 +1,7 @@
 package org.firstinspires.ftc.teamcode.pathing
 
-import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS
-import org.firstinspires.ftc.teamcode.util.Pinpoint
+import org.firstinspires.ftc.teamcode.util.drivers.Pinpoint
 import kotlin.math.PI
 
 
