@@ -5,42 +5,40 @@ import com.qualcomm.hardware.sparkfun.SparkFunOTOS
 import org.firstinspires.ftc.teamcode.util.Pinpoint
 import kotlin.math.PI
 
-@Config
-class Otos{
-    @JvmField
-    val OtosOffsetX = -3.0998
-    @JvmField
-    val OtosOffsetY = -3.0397
-    @JvmField
-    val OtosOffsetH = -1.5672
-
-    @JvmField
-    val offset = SparkFunOTOS.Pose2D(OtosOffsetX, OtosOffsetY, OtosOffsetH)
-
-    @JvmField
-    val linearScalar = .985
-    @JvmField
-    val angularScalar = .995
-}
-
-class Pinpoint{
-    @JvmField
-    val xOffsetMM = 75.0
-    @JvmField
-    val yOffsetMM = 27.0
-
-    @JvmField
-    val xDirection = Pinpoint.EncoderDirection.REVERSED
-    @JvmField
-    val yDirection = Pinpoint.EncoderDirection.FORWARD
-}
 
 @JvmField
-val axialGain = 6.0
+val OtosOffsetX = -3.0998
 @JvmField
-val lateralGain = 6.0
+val OtosOffsetY = -3.0397
 @JvmField
-val headingGain = 7.0
+val OtosOffsetH = -1.5672
+
+@JvmField
+val offset = SparkFunOTOS.Pose2D(OtosOffsetX, OtosOffsetY, OtosOffsetH)
+
+@JvmField
+val linearScalar = .985
+@JvmField
+val angularScalar = .995
+
+
+
+@JvmField
+val xOffsetMM = 75.0
+@JvmField
+val yOffsetMM = 27.0
+
+@JvmField
+val xDirection = Pinpoint.EncoderDirection.REVERSED
+@JvmField
+val yDirection = Pinpoint.EncoderDirection.REVERSED
+
+@JvmField
+val axialGain = 4.0
+@JvmField
+val lateralGain = 4.0
+@JvmField
+val headingGain = 5.0
 @JvmField
 val axialVelGain = 0.15
 @JvmField

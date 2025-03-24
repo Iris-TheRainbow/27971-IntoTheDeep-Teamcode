@@ -3,10 +3,11 @@ package org.firstinspires.ftc.teamcode.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.subsystems.arm;
-import org.firstinspires.ftc.teamcode.subsystems.deposit;
-import org.firstinspires.ftc.teamcode.subsystems.extendo;
-import org.firstinspires.ftc.teamcode.subsystems.lift;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.arm;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.deposit;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.extendo;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.lift;
+import org.firstinspires.ftc.teamcode.util.features.Telem;
 
 import dev.frozenmilk.mercurial.Mercurial;
 
@@ -16,6 +17,7 @@ import dev.frozenmilk.mercurial.Mercurial;
 @deposit.Attach
 @arm.Attach
 @TeleOp
+@Telem.Attach
 public class resetAll extends OpMode {
     @Override
     public void init() {

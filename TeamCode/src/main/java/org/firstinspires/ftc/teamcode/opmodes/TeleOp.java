@@ -1,36 +1,32 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
-import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.depositSpec;
-import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.liftHang;
-import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.liftHigh;
-import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.liftMedium;
-import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.prepDepo;
-import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.retract;
-import static org.firstinspires.ftc.teamcode.subsystems.CommandGroups.transfer;
-import static org.firstinspires.ftc.teamcode.util.commandUtil.ifElse;
-import static org.firstinspires.ftc.teamcode.util.commandUtil.proxiedCommand;
+import static org.firstinspires.ftc.teamcode.commandbase.CommandGroups.depositSpec;
+import static org.firstinspires.ftc.teamcode.commandbase.CommandGroups.liftHigh;
+import static org.firstinspires.ftc.teamcode.commandbase.CommandGroups.liftMedium;
+import static org.firstinspires.ftc.teamcode.commandbase.CommandGroups.prepDepo;
+import static org.firstinspires.ftc.teamcode.commandbase.CommandGroups.retract;
+import static org.firstinspires.ftc.teamcode.commandbase.CommandGroups.transfer;
+import static org.firstinspires.ftc.teamcode.commandbase.commandUtil.proxiedCommand;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.teamcode.subsystems.CommandGroups;
-import org.firstinspires.ftc.teamcode.subsystems.arm;
-import org.firstinspires.ftc.teamcode.subsystems.extendo;
-import org.firstinspires.ftc.teamcode.subsystems.intake;
-import org.firstinspires.ftc.teamcode.subsystems.drive;
-import org.firstinspires.ftc.teamcode.subsystems.lift;
-import org.firstinspires.ftc.teamcode.subsystems.deposit;
-import org.firstinspires.ftc.teamcode.util.BulkRead;
-import org.firstinspires.ftc.teamcode.util.LoopTimes;
-import org.firstinspires.ftc.teamcode.util.MercurialAction;
-import org.firstinspires.ftc.teamcode.util.SlothFinder;
-import org.firstinspires.ftc.teamcode.util.Telem;
+import org.firstinspires.ftc.teamcode.commandbase.CommandGroups;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.arm;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.extendo;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.intake;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.drive;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.lift;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.deposit;
+import org.firstinspires.ftc.teamcode.util.features.BulkRead;
+import org.firstinspires.ftc.teamcode.util.features.LoopTimes;
+import org.firstinspires.ftc.teamcode.util.features.SlothFinder;
+import org.firstinspires.ftc.teamcode.util.features.Telem;
 
 
 import dev.frozenmilk.mercurial.Mercurial;
 import dev.frozenmilk.mercurial.commands.groups.Advancing;
 import dev.frozenmilk.mercurial.commands.groups.Parallel;
 import dev.frozenmilk.mercurial.commands.groups.Sequential;
-import dev.frozenmilk.mercurial.commands.util.IfElse;
 import dev.frozenmilk.mercurial.commands.util.Wait;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp")
