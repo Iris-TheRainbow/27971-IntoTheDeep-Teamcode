@@ -10,12 +10,15 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.commandbase.CommandGroups;
-import org.firstinspires.ftc.teamcode.commandbase.subsystems.arm;
-import org.firstinspires.ftc.teamcode.commandbase.subsystems.deposit;
-import org.firstinspires.ftc.teamcode.commandbase.subsystems.drive;
-import org.firstinspires.ftc.teamcode.commandbase.subsystems.extendo;
-import org.firstinspires.ftc.teamcode.commandbase.subsystems.intake;
-import org.firstinspires.ftc.teamcode.commandbase.subsystems.lift;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.DepositArm;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.DepositClaw;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.DepositWrist;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.Drive;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.Extendo;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.IntakeClaw;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.IntakeRotate;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.IntakeWrist;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.util.features.LoopTimes;
 
 import org.firstinspires.ftc.teamcode.util.features.BulkRead;
@@ -29,12 +32,15 @@ import dev.frozenmilk.mercurial.commands.util.Wait;
 
 @Autonomous
 @Mercurial.Attach
-@arm.Attach
-@deposit.Attach
-@intake.Attach
-@lift.Attach
-@extendo.Attach
-@drive.Attach
+@DepositArm.Attach
+@DepositWrist.Attach
+@DepositClaw.Attach
+@IntakeWrist.Attach
+@IntakeClaw.Attach
+@IntakeRotate.Attach
+@Lift.Attach
+@Extendo.Attach
+@Drive.Attach
 @BulkRead.Attach
 @LoopTimes.Attach
 @SlothFinder.Attach
@@ -43,10 +49,10 @@ public class AdvancedSampleAuto extends OpMode {
     private final Pose2d initialPose = new Pose2d(-36, -62.5, Math.toRadians(180));
     private final Pose2d depositSpot = new Pose2d(-53, -55, Math.toRadians(230));
     private Command intakeSample(){
-        return new Sequential(CommandGroups.intake(), intake.closeClaw(), new Wait(.15));
+        return new Sequential(CommandGroups.intake(), IntakeClaw.closeClaw(), new Wait(.15));
     }
     private Command intakeSampleShort(){
-        return new Sequential(CommandGroups.intakeAutoShort(), intake.closeClaw(), new Wait(.15));
+        return new Sequential(CommandGroups.intakeAutoShort(), IntakeClaw.closeClaw(), new Wait(.15));
     }
     private Command transferAndLift(){
         return new Sequential(retract(), transfer(), liftHigh());
@@ -57,65 +63,65 @@ public class AdvancedSampleAuto extends OpMode {
     }
     @Override
     public void start(){
-        drive.p2p(initialPose)
+        Drive.p2p(initialPose)
                 .pidTo(depositSpot)
                 .duringLast(liftHigh())
 
                 //cycle1
                 .pidTo(new Pose2d(-45.50, -54, Math.toRadians(90-180)))
-                .duringLast(deposit.openClaw())
+                .duringLast(DepositClaw.openClaw())
                 .stopAndAdd(intakeSample())
                 .pidTo(depositSpot)
                 .duringLast(transferAndLift())
-                .stopAndAdd(deposit.openClaw())
+                .stopAndAdd(DepositClaw.openClaw())
 
                 //cycle2
                 .pidTo(new Pose2d(-55, -50, Math.toRadians(90-180)), 3, 99999)
                 .pidTo(new Pose2d(-55, -53, Math.toRadians(90-180)), .5, 2)
-                .duringLast(extendo.goTo(465))
-                .afterTime(.2, lift.goTo(0))
+                .duringLast(Extendo.goTo(465))
+                .afterTime(.2, Lift.goTo(0))
                 .stopAndAdd(intakeSampleShort())
                 .pidTo(depositSpot)
                 .duringLast(transferAndLift())
 
                 //cycle3
                 .pidTo(new Pose2d(-54, -53, Math.toRadians(230)))
-                .duringLast(deposit.openClaw())
+                .duringLast(DepositClaw.openClaw())
                 .pidTo(new Pose2d(-42, -38, Math.toRadians(-25)))
-                .afterTime(.25, extendo.goTo(435), lift.goTo(0))
-                .duringLast(intake.wristRotate(.7))
-                .stopAndAdd(new Sequential(intakeAuto(), intake.wristRotate(.7), new Wait(.2), intake.closeClaw(), new Wait(.15), intake.wristRotate(.5)))
+                .afterTime(.25, Extendo.goTo(435), Lift.goTo(0))
+                .duringLast(IntakeRotate.wristRotate(.7))
+                .stopAndAdd(new Sequential(intakeAuto(), IntakeRotate.wristRotate(.7), new Wait(.2), IntakeClaw.closeClaw(), new Wait(.15), IntakeRotate.wristRotate(.5)))
                 .pidTo(depositSpot)
                 .duringLast(transferAndLift())
 
                 //cycle4
                 .pidTo(new Pose2d(-44, -13, Math.toRadians(180)), 20, 999) //waypoint so i dont hit the leg
-                .duringLast(deposit.openClaw())
+                .duringLast(DepositClaw.openClaw())
                 .pidTo(new Pose2d(-30, -9, Math.toRadians(180)))
-                .duringLast(new Sequential(new Wait(.5), extendo.goTo(465)))
+                .duringLast(new Sequential(new Wait(.5), Extendo.goTo(465)))
                 .stopAndAdd(intakeSample())
-                .stopAndAdd(intake.wristTransfer())
+                .stopAndAdd(IntakeWrist.wristTransfer())
                 .pidTo(new Pose2d(-44, -15, Math.toRadians(180)), 20, 999) //waypoint again
-                .duringLast(extendo.goTo(0))
+                .duringLast(Extendo.goTo(0))
                 .pidTo(depositSpot)
                 .duringLast(transferAndLift())
-                .stopAndAdd(deposit.openClaw())
+                .stopAndAdd(DepositClaw.openClaw())
 
                 //cycle5
                 .pidTo(new Pose2d(-44, -13, Math.toRadians(180)), 20, 999) //waypoint so i dont hit the leg
                 .pidTo(new Pose2d(-34, -9, Math.toRadians(180)))
-                .duringLast(extendo.goTo(465))
+                .duringLast(Extendo.goTo(465))
                 .stopAndAdd(intakeSample())
-                .stopAndAdd(intake.wristTransfer())
+                .stopAndAdd(IntakeWrist.wristTransfer())
                 .pidTo(new Pose2d(-44, -15, Math.toRadians(180)), 20, 999) //waypoint again
-                .duringLast(extendo.goTo(0))
+                .duringLast(Extendo.goTo(0))
                 .pidTo(depositSpot)
                 .duringLast(transferAndLift())
-                .stopAndAdd(deposit.openClaw())
+                .stopAndAdd(DepositClaw.openClaw())
 
                 //park
                 .pidTo(new Pose2d(-44, -13, Math.toRadians(180)), 20, 999) //waypoint so i dont hit the leg
-                .duringLast(new Sequential(new Wait(.1), lift.goTo(100)))
+                .duringLast(new Sequential(new Wait(.1), Lift.goTo(100)))
                 .pidTo(new Pose2d(-16, -9, Math.toRadians(0)))
                 .build().schedule();
     }
@@ -125,4 +131,3 @@ public class AdvancedSampleAuto extends OpMode {
         //telemetry.addLine(Mercurial.INSTANCE.getActiveCommandSnapshot().toString());
     }
 }
-;

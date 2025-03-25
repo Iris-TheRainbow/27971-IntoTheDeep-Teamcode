@@ -7,7 +7,7 @@ public class SquIDSLController {
     private double kP, kD , kS, minkL, maxkL;
     private int maxkLPose;
     private double lastTime;
-    private int lastError = 0;
+    private final int lastError = 0;
     public SquIDSLController(double kP, double kD, double kS, double minkL, double maxkL, int maxkLPose){
         setConstants(kP, kD, kS, minkL, maxkL, maxkLPose);
     }

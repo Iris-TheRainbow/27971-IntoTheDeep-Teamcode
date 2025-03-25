@@ -49,8 +49,8 @@ import dev.frozenmilk.mercurial.commands.Lambda;
 import dev.frozenmilk.mercurial.subsystems.Subsystem;
 import kotlin.annotation.MustBeDocumented;
 
-public class drive implements Subsystem {
-        public static final drive INSTANCE = new drive();
+public class Drive implements Subsystem {
+        public static final Drive INSTANCE = new Drive();
         private static DcMotorEx leftFront, leftBack, rightFront, rightBack;
         private static Pinpoint pinpoint;
         private static Pose2d pose;
@@ -59,21 +59,7 @@ public class drive implements Subsystem {
         private static HolonomicRobotCentricController controller;
         private static double turnNerf = 1;
         private static final LinkedList<Pose2d> poseHistory = new LinkedList<>();
-        private drive() { }
-
-        @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.TYPE) @MustBeDocumented @Inherited
-        public @interface Attach { }
-
-        private Dependency<?> dependency = Subsystem.DEFAULT_DEPENDENCY.and(new SingleAnnotation<>(Attach.class));
-
-        @NonNull @Override
-        public Dependency<?> getDependency() { return dependency; }
-
-        @Override
-        public void setDependency(@NonNull Dependency<?> dependency) { this.dependency = dependency; }
-
-        @Override
-        public void preUserInitHook(@NonNull Wrapper opMode) { }
+        private Drive() { }
 
         @Override
         public void postUserInitHook(@NonNull Wrapper opMode) {
@@ -135,7 +121,7 @@ public class drive implements Subsystem {
                 if (x < .05 && y < .05){
                         x = 0;
                         y = 0;
-                        if (lastTarget.minusExp(drive.pose).position.norm() > .5){
+                        if (lastTarget.minusExp(Drive.pose).position.norm() > .5){
                                 x = command.linearVel.x;
                                 y = command.linearVel.y;
                         }
@@ -144,7 +130,7 @@ public class drive implements Subsystem {
                 }
                 if (rot < .05 ){
                         rot = 0;
-                        if (Math.abs(Math.toDegrees(lastTarget.minusExp(drive.pose).heading.toDouble())) > 1){
+                        if (Math.abs(Math.toDegrees(lastTarget.minusExp(Drive.pose).heading.toDouble())) > 1){
                                 rot = -command.angVel;
                         }
                         newTargetHead = lastTarget.heading.toDouble();
@@ -201,7 +187,7 @@ public class drive implements Subsystem {
         public static Lambda driveCommand() {
             return new Lambda("driveCommand")
                     .addRequirements(INSTANCE)
-                    .setExecute(drive::driveUpdate);
+                    .setExecute(Drive::driveUpdate);
         }
         @NonNull
         public static Lambda PIDToLast() {
@@ -224,8 +210,8 @@ public class drive implements Subsystem {
                         .setInit(pose::evaluate)
                         .setExecute(() -> {
                                 lastTarget = pose.value();
-                                double translationalError = pose.value().minusExp(drive.pose).position.norm();
-                                double headingError = Math.abs(Math.toDegrees(pose.value().minusExp(drive.pose).heading.toDouble()));
+                                double translationalError = pose.value().minusExp(Drive.pose).position.norm();
+                                double headingError = Math.abs(Math.toDegrees(pose.value().minusExp(Drive.pose).heading.toDouble()));
                                 if (!(translationalError < .5 && headingError <  1)) {
                                         goToTarget(pose.value());
                                 } else {
@@ -234,8 +220,8 @@ public class drive implements Subsystem {
                         })
                         .setFinish(() -> {
                                 Pose2dDual<Time> target = Pose2dDual.constant(pose.value(), 3);
-                                double translationalError = target.value().minusExp(drive.pose).position.norm();
-                                double headingError = Math.abs(Math.toDegrees(target.value().minusExp(drive.pose).heading.toDouble()));
+                                double translationalError = target.value().minusExp(Drive.pose).position.norm();
+                                double headingError = Math.abs(Math.toDegrees(target.value().minusExp(Drive.pose).heading.toDouble()));
                                 return  translationalError < translationalAccuracy && headingError <  headingAccuracy;
                         })
                         .setEnd((interrupted) -> setDrivePower(new Vector2d(0, 0), 0.0));
@@ -245,7 +231,18 @@ public class drive implements Subsystem {
         }
         public static PidToPointBuilderKt p2p(Pose2d pose){
                 pinpoint.setPosition(Pinpoint.rrToPinpointPose(pose));
-                drive.pose = pose;
-                return new PidToPointBuilderKt(pose, drive::PIDToPoint, drive::getPose);
+                Drive.pose = pose;
+                return new PidToPointBuilderKt(pose, Drive::PIDToPoint, Drive::getPose);
         }
+
+        @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.TYPE) @MustBeDocumented @Inherited
+        public @interface Attach { }
+
+        private Dependency<?> dependency = Subsystem.DEFAULT_DEPENDENCY.and(new SingleAnnotation<>(Attach.class));
+
+        @NonNull @Override
+        public Dependency<?> getDependency() { return dependency; }
+
+        @Override
+        public void setDependency(@NonNull Dependency<?> dependency) { this.dependency = dependency; }
     }

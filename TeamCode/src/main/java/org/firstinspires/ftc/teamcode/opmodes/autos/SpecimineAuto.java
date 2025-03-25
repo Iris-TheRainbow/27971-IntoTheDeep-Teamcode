@@ -10,12 +10,15 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.commandbase.CommandGroups;
-import org.firstinspires.ftc.teamcode.commandbase.subsystems.arm;
-import org.firstinspires.ftc.teamcode.commandbase.subsystems.deposit;
-import org.firstinspires.ftc.teamcode.commandbase.subsystems.drive;
-import org.firstinspires.ftc.teamcode.commandbase.subsystems.extendo;
-import org.firstinspires.ftc.teamcode.commandbase.subsystems.intake;
-import org.firstinspires.ftc.teamcode.commandbase.subsystems.lift;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.DepositArm;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.DepositClaw;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.DepositWrist;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.Drive;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.Extendo;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.IntakeClaw;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.IntakeRotate;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.IntakeWrist;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.util.features.BulkRead;
 import org.firstinspires.ftc.teamcode.util.features.LoopTimes;
 import org.firstinspires.ftc.teamcode.util.features.SlothFinder;
@@ -28,12 +31,15 @@ import dev.frozenmilk.mercurial.commands.util.Wait;
 
 @Autonomous
 @Mercurial.Attach
-@arm.Attach
-@deposit.Attach
-@intake.Attach
-@lift.Attach
-@extendo.Attach
-@drive.Attach
+@DepositArm.Attach
+@DepositWrist.Attach
+@DepositClaw.Attach
+@IntakeWrist.Attach
+@IntakeClaw.Attach
+@IntakeRotate.Attach
+@Lift.Attach
+@Extendo.Attach
+@Drive.Attach
 @BulkRead.Attach
 @LoopTimes.Attach
 @SlothFinder.Attach
@@ -42,10 +48,10 @@ public class SpecimineAuto extends OpMode {
     private final Pose2d initialPose = new Pose2d(12, -62.5, Math.toRadians(90));
     private Command driveCommand;
     private Command intakeSample(){
-        return new Sequential(CommandGroups.intake(), new Wait(.1), intake.closeClaw(), new Wait(.2));
+        return new Sequential(CommandGroups.intake(), new Wait(.1), IntakeClaw.closeClaw(), new Wait(.2));
     }
     private Command intakeSampleShort(){
-        return new Sequential(CommandGroups.intakeAutoShort(), new Wait(.25), intake.closeClaw(), new Wait(.45));
+        return new Sequential(CommandGroups.intakeAutoShort(), new Wait(.25), IntakeClaw.closeClaw(), new Wait(.45));
     }
     private Command transferAndLift(){
         return new Sequential(retract(), transfer(), liftMedium());
@@ -57,11 +63,11 @@ public class SpecimineAuto extends OpMode {
 
     @Override
     public void init() {
-        drive.p2p(initialPose)
-                .stopAndAdd(deposit.closeClaw())
+        Drive.p2p(initialPose)
+                .stopAndAdd(DepositClaw.closeClaw())
                 .waitSeconds(.5)
-                .pidTo(new Pose2d(0-4, -32, Math.toRadians(90)))
-                .duringLast(liftMedium(), deposit.closeClaw(), extendo.goTo(0))
+                .pidTo(new Pose2d(-4, -32, Math.toRadians(90)))
+                .duringLast(liftMedium(), DepositClaw.closeClaw(), Extendo.goTo(0))
                 .stopAndAdd(depositSpec())
                 //strafe left
                 .pidTo(new Pose2d(33, -40, Math.toRadians(0)), 2, 9999)
@@ -96,4 +102,3 @@ public class SpecimineAuto extends OpMode {
         telemetry.addLine(Mercurial.INSTANCE.getActiveCommandSnapshot().toString());
     }
 }
-;

@@ -5,12 +5,12 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.RobotLog;
 
-import org.firstinspires.ftc.teamcode.commandbase.subsystems.arm;
-import org.firstinspires.ftc.teamcode.commandbase.subsystems.deposit;
-import org.firstinspires.ftc.teamcode.commandbase.subsystems.drive;
-import org.firstinspires.ftc.teamcode.commandbase.subsystems.extendo;
-import org.firstinspires.ftc.teamcode.commandbase.subsystems.intake;
-import org.firstinspires.ftc.teamcode.commandbase.subsystems.lift;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.DepositArm;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.DepositWrist;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.Drive;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.Extendo;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.IntakeWrist;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.util.features.Telem;
 
 import dev.frozenmilk.mercurial.Mercurial;
@@ -18,14 +18,14 @@ import dev.frozenmilk.mercurial.commands.Command;
 
 @TeleOp
 @Mercurial.Attach
-@extendo.Attach
-@lift.Attach
-@arm.Attach
-@intake.Attach
-@deposit.Attach
-@drive.Attach
+@Extendo.Attach
+@Lift.Attach
+@DepositArm.Attach
+@IntakeWrist.Attach
+@DepositWrist.Attach
+@Drive.Attach
 @Telem.Attach
-public class spin extends OpMode {
+public class Spin extends OpMode {
     private Command driveCommand;
     @Override
     public void init() {
@@ -34,7 +34,7 @@ public class spin extends OpMode {
     @Override
     public void start(){
         RobotLog.a("fuck this shit 2 the fuckening");
-        driveCommand = drive.p2p(new Pose2d(0,0,0))
+        driveCommand = Drive.p2p(new Pose2d(0,0,0))
                 .stopAndAdd(() -> RobotLog.i("begin pinpoint pi/2 spin test"))
                 .stopAndAdd(() -> RobotLog.v("pinpoint to pi/2"))
                 .pidTo(new Pose2d(0, 0, Math.PI/2))

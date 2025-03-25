@@ -25,28 +25,18 @@ import dev.frozenmilk.mercurial.subsystems.Subsystem;
 import kotlin.annotation.MustBeDocumented;
 
 @Config
-public class extendo implements Subsystem {
-    public static final extendo INSTANCE = new extendo();
+public class Extendo implements Subsystem {
+    public static final Extendo INSTANCE = new Extendo();
     private static DcMotorEx extendoMotor, extendoEncoder;
     private static int liftTarget;
     private static PDFController pid;
     private static double power;
-    private static double kP = .006, kD = .0006, kF = 0;
-    private static int tollerence = 10;
-    private extendo() { }
+    private static final double kP = .006;
+    private static final double kD = .0006;
+    private static final double kF = 0;
+    private static final int tollerence = 10;
+    private Extendo() { }
 
-    @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.TYPE) @MustBeDocumented
-    @Inherited
-    public @interface Attach { }
-
-    private Dependency<?> dependency = Subsystem.DEFAULT_DEPENDENCY.and(new SingleAnnotation<>(Attach.class));
-
-    @NonNull
-    @Override
-    public Dependency<?> getDependency() { return dependency; }
-
-    @Override
-    public void setDependency(@NonNull Dependency<?> dependency) { this.dependency = dependency; }
 
     @Override
     public void postUserInitHook(@NonNull Wrapper opMode) {
@@ -71,26 +61,13 @@ public class extendo implements Subsystem {
         extendoMotor.setPower(power);
     }
 
-    public static void hold() {
-        extendoMotor.setPower(kF);
-    }
-    public static double getPower(){
-        return power;
-    }
-
-    public static int getLiftPosition(){
-        return extendoEncoder.getCurrentPosition();
-    }
     public static boolean atTarget() { return (extendoEncoder.getCurrentPosition() >= (getTarget() - tollerence) || extendoEncoder.getCurrentPosition() <= (getTarget() + tollerence)); }
     public static void reset(){extendoEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); extendoEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);}
-    public static boolean extended(){
-        return liftTarget > 0;
-    }
     @NonNull
     public static Lambda update() {
         return new Lambda("update the extendo")
                 .addRequirements(INSTANCE)
-                .setExecute(extendo::pidUpdate)
+                .setExecute(Extendo::pidUpdate)
                 .setFinish(() -> false);
     }
 
@@ -98,7 +75,19 @@ public class extendo implements Subsystem {
     public static Lambda goTo(int target){
         return new Lambda("set pid target")
                 .setExecute(() -> setTarget(target))
-                .setFinish(extendo::atTarget);
+                .setFinish(Extendo::atTarget);
     }
 
+    @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.TYPE) @MustBeDocumented
+    @Inherited
+    public @interface Attach { }
+
+    private Dependency<?> dependency = Subsystem.DEFAULT_DEPENDENCY.and(new SingleAnnotation<>(Attach.class));
+
+    @NonNull
+    @Override
+    public Dependency<?> getDependency() { return dependency; }
+
+    @Override
+    public void setDependency(@NonNull Dependency<?> dependency) { this.dependency = dependency; }
 }

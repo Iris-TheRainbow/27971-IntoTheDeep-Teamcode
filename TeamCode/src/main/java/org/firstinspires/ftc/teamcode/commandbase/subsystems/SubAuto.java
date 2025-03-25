@@ -7,8 +7,8 @@ import androidx.annotation.NonNull;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.Camera;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.commandbase.Vision;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 import java.lang.annotation.ElementType;
@@ -28,25 +28,11 @@ import dev.frozenmilk.mercurial.commands.util.Wait;
 import dev.frozenmilk.mercurial.subsystems.Subsystem;
 import kotlin.annotation.MustBeDocumented;
 
-public class subAuto implements Subsystem {
-    public static final subAuto INSTANCE = new subAuto();
+public class SubAuto implements Subsystem {
+    public static final SubAuto INSTANCE = new SubAuto();
 
-    private subAuto() { }
+    private SubAuto() { }
 
-    @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.TYPE) @MustBeDocumented
-    @Inherited
-    public @interface Attach { }
-
-    private Dependency<?> dependency = Subsystem.DEFAULT_DEPENDENCY.and(new SingleAnnotation<>(Attach.class));
-
-    @NonNull
-    @Override
-    public Dependency<?> getDependency() { return dependency; }
-
-    @Override
-    public void setDependency(@NonNull Dependency<?> dependency) { this.dependency = dependency; }
-
-    private static Camera cam;
     private static Vision vision;
     private static VisionPortal visionPortal;
     private static Vision.TeamColor teamColor = new Vision.NullAlliance();
@@ -56,7 +42,7 @@ public class subAuto implements Subsystem {
     private static double yOffset = 0;
     private static double clawAngle;
     private static void buildVision(Vision.TeamColor teamColor){
-        subAuto.teamColor = teamColor;
+        SubAuto.teamColor = teamColor;
         vision = new Vision(teamColor);
         if (visionPortal != null){
             visionPortal.close();
@@ -122,4 +108,17 @@ public class subAuto implements Subsystem {
                 .addRequirements(INSTANCE)
                 .setInit(() -> buildVision(color));
     }
+
+    @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.TYPE) @MustBeDocumented
+    @Inherited
+    public @interface Attach { }
+
+    private Dependency<?> dependency = Subsystem.DEFAULT_DEPENDENCY.and(new SingleAnnotation<>(Attach.class));
+
+    @NonNull
+    @Override
+    public Dependency<?> getDependency() { return dependency; }
+
+    @Override
+    public void setDependency(@NonNull Dependency<?> dependency) { this.dependency = dependency; }
 }

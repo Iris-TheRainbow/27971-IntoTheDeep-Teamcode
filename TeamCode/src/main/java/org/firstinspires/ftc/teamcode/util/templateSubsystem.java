@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.commandbase.subsystems;
+package org.firstinspires.ftc.teamcode.util;
 
 import androidx.annotation.NonNull;
 
@@ -18,10 +18,10 @@ import dev.frozenmilk.mercurial.subsystems.Subsystem;
 import kotlin.annotation.MustBeDocumented;
 
 public class
-template implements Subsystem {
-    public static final template INSTANCE = new template();
+templateSubsystem implements Subsystem {
+    public static final templateSubsystem INSTANCE = new templateSubsystem();
 
-    private template() { }
+    private templateSubsystem() { }
 
     @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.TYPE) @MustBeDocumented
     @Inherited
@@ -52,6 +52,6 @@ template implements Subsystem {
     public static Lambda command() {
         return new Lambda("simple")
                 .addRequirements(INSTANCE)
-                .setExecute(template::function);
+                .setExecute(templateSubsystem::function);
     }
 }

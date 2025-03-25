@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.util.controllers.SquIDSLController;
-import org.firstinspires.ftc.teamcode.util.Waiter;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -27,31 +26,19 @@ import dev.frozenmilk.mercurial.subsystems.Subsystem;
 import kotlin.annotation.MustBeDocumented;
 
 @Config
-public class lift implements Subsystem {
-    public static final lift INSTANCE = new lift();
+public class Lift implements Subsystem {
+    public static final Lift INSTANCE = new Lift();
     private static DcMotorEx liftLeft, liftLeft2, liftRight, liftEncoder;
     private static int liftTarget;
     public static int liftOffset;
     private static double power;
     private static SquIDSLController squid;
-    private static double kP = .006, kD = 0, kS = 0;
-    private static int tollerence = 30;
-    private static final Waiter waiter = new Waiter();
+    private static final double kP = .006;
+    private static final double kD = 0;
+    private static final double kS = 0;
+    private static final int tollerence = 30;
     private static Telemetry telem;
-    private lift() { }
-
-    @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.TYPE) @MustBeDocumented
-    @Inherited
-    public @interface Attach { }
-
-    private Dependency<?> dependency = Subsystem.DEFAULT_DEPENDENCY.and(new SingleAnnotation<>(Attach.class));
-
-    @NonNull
-    @Override
-    public Dependency<?> getDependency() { return dependency; }
-
-    @Override
-    public void setDependency(@NonNull Dependency<?> dependency) { this.dependency = dependency; }
+    private Lift() { }
 
     @Override
     public void postUserInitHook(@NonNull Wrapper opMode) {
@@ -90,23 +77,13 @@ public class lift implements Subsystem {
         liftEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
-    public static double getPower(){
-        return power;
-    }
-    public static double getError(){ return ( getTarget() + liftEncoder.getCurrentPosition() ); }
-    public static int getLiftPosition(){
-        return -liftEncoder.getCurrentPosition();
-    }
     public static boolean atTarget() { return Math.abs(liftTarget + liftEncoder.getCurrentPosition()) < tollerence; }
 
-    public static boolean extended(){
-        return liftTarget > 0;
-    }
     @NonNull
     public static Lambda update() {
         return new Lambda("update the pid")
                 .addRequirements(INSTANCE)
-                .setExecute(lift::pidUpdate)
+                .setExecute(Lift::pidUpdate)
                 .setInterruptible(() -> true)
                 .setFinish(() -> false);
     }
@@ -115,7 +92,7 @@ public class lift implements Subsystem {
     public static Lambda goTo(int to){
         return new Lambda("set pid target")
                 .setExecute(() -> setTarget(to))
-                .setFinish(lift::atTarget);
+                .setFinish(Lift::atTarget);
     }
 
     @NonNull
@@ -133,5 +110,18 @@ public class lift implements Subsystem {
                         setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                     });
     }
+
+    @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.TYPE) @MustBeDocumented
+    @Inherited
+    public @interface Attach { }
+
+    private Dependency<?> dependency = Subsystem.DEFAULT_DEPENDENCY.and(new SingleAnnotation<>(Attach.class));
+
+    @NonNull
+    @Override
+    public Dependency<?> getDependency() { return dependency; }
+
+    @Override
+    public void setDependency(@NonNull Dependency<?> dependency) { this.dependency = dependency; }
 
 }

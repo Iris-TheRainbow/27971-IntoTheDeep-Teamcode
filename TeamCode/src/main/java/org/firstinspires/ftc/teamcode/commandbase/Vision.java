@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.commandbase.subsystems;
+package org.firstinspires.ftc.teamcode.commandbase;
 
 
 import android.graphics.Bitmap;
@@ -34,7 +34,7 @@ public class Vision implements VisionProcessor{
         Scalar getLower();
         int getDrawColor();
     }
-    static class RedAlliance implements TeamColor{
+    public static class RedAlliance implements TeamColor{
         @NonNull
         @Override
         public String toString(){return "RED"; }
@@ -42,7 +42,7 @@ public class Vision implements VisionProcessor{
         public Scalar getLower(){ return new Scalar(250, 160, 180, 0); }
         public int getDrawColor(){ return Color.RED; }
     }
-    static class BlueAlliance implements TeamColor{
+    public static class BlueAlliance implements TeamColor{
         @NonNull
         @Override
         public String toString(){return "BLUE"; }
@@ -50,7 +50,7 @@ public class Vision implements VisionProcessor{
         public Scalar getLower(){ return new Scalar(140, 40, 0, 0); }
         public int getDrawColor(){ return Color.BLUE; }
     }
-    static class NullAlliance implements TeamColor{
+    public static class NullAlliance implements TeamColor{
         @NonNull
         @Override
         public String toString(){return "NULL"; }
@@ -170,7 +170,7 @@ public class Vision implements VisionProcessor{
             }
         }
         paint.setStrokeWidth(10);
-        canvas.drawLine((float) (scaleBmpPxToCanvasPx * width/2), (float) (scaleBmpPxToCanvasPx * height/2), (float) (scaleBmpPxToCanvasPx * width/2), (float)(scaleBmpPxToCanvasPx*height/2 + 1/pxToIn), paint);
+        canvas.drawLine(scaleBmpPxToCanvasPx * width/2, scaleBmpPxToCanvasPx * height/2, scaleBmpPxToCanvasPx * width/2, (float)(scaleBmpPxToCanvasPx*height/2 + 1/pxToIn), paint);
     }
     public static double distance(double x1, double y1, double x2, double y2){
         return (Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)));
