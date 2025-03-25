@@ -73,8 +73,8 @@ public class Drive implements Subsystem {
                 leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
                 pinpoint = hwmap.get(Pinpoint.class, "pinpoint");
                 pinpoint.setEncoderResolution(Pinpoint.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-                pinpoint.setEncoderDirections(PathingConstantsKt.xDirection, PathingConstantsKt.yDirection);
-                pinpoint.setOffsets(PathingConstantsKt.xOffsetMM, PathingConstantsKt.yOffsetMM, DistanceUnit.MM);
+                pinpoint.setEncoderDirections(PathingConstantsKt.pinpointXDirection, PathingConstantsKt.pinpointYDirection);
+                pinpoint.setOffsets(PathingConstantsKt.pinpointXOffsetMM, PathingConstantsKt.pinpointYOffsetMM, DistanceUnit.MM);
                 pinpoint.resetPosAndIMU();
                 if (pose == null){
                         pose = new Pose2d(0,0,0);

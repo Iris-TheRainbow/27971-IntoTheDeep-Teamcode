@@ -77,7 +77,10 @@ public class Extendo implements Subsystem {
                 .setExecute(() -> setTarget(target))
                 .setFinish(Extendo::atTarget);
     }
-
+    public enum States{
+        EXTENDED,
+        RETRACTED
+    }
     @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.TYPE) @MustBeDocumented
     @Inherited
     public @interface Attach { }

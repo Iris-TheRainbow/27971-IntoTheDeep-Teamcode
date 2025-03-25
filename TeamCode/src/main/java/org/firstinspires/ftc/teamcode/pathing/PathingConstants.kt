@@ -6,31 +6,31 @@ import kotlin.math.PI
 
 
 @JvmField
-val OtosOffsetX = -3.0998
+val otosOffsetX = -3.0998
 @JvmField
-val OtosOffsetY = -3.0397
+val otosOffsetY = -3.0397
 @JvmField
-val OtosOffsetH = -1.5672
+val otosOffsetH = -1.5672
 
 @JvmField
-val offset = SparkFunOTOS.Pose2D(OtosOffsetX, OtosOffsetY, OtosOffsetH)
+val offset = SparkFunOTOS.Pose2D(otosOffsetX, otosOffsetY, otosOffsetH)
 
 @JvmField
-val linearScalar = .985
+val otosLinearScalar = .985
 @JvmField
-val angularScalar = .995
+val otosAngularScalar = .995
 
 
 
 @JvmField
-val xOffsetMM = 75.0
+val pinpointXOffsetMM = 75.0
 @JvmField
-val yOffsetMM = 27.0
+val pinpointYOffsetMM = 27.0
 
 @JvmField
-val xDirection = Pinpoint.EncoderDirection.REVERSED
+val pinpointXDirection = Pinpoint.EncoderDirection.REVERSED
 @JvmField
-val yDirection = Pinpoint.EncoderDirection.REVERSED
+val pinpointYDirection = Pinpoint.EncoderDirection.REVERSED
 
 @JvmField
 val axialGain = 4.0

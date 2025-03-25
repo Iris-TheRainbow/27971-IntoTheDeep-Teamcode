@@ -26,9 +26,9 @@ public class DepositClaw implements Subsystem {
     private DepositClaw() {
     }
 
-    private static final StateMachine<ClawState> clawStates = new StateMachine<>(ClawState.CLOSED)
-            .withState(ClawState.CLOSED, (stateRef, name) -> closeClaw())
-            .withState(ClawState.OPEN, (stateRef, name) -> openClaw());
+    private static final StateMachine<States> clawStates = new StateMachine<>(States.CLOSED)
+            .withState(States.CLOSED, (stateRef, name) -> closeClaw())
+            .withState(States.OPEN, (stateRef, name) -> openClaw());
 
     @Override
     public void postUserInitHook(@NonNull Wrapper opMode) {
@@ -37,8 +37,8 @@ public class DepositClaw implements Subsystem {
         clawServo.setDirection(Servo.Direction.FORWARD);
     }
 
-    private static void close(){ clawServo.setPosition(1); clawStates.setState(ClawState.CLOSED);}
-    private static void open(){ clawServo.setPosition(.7); clawStates.setState(ClawState.OPEN);}
+    private static void close(){ clawServo.setPosition(1); clawStates.setState(States.CLOSED);}
+    private static void open(){ clawServo.setPosition(.7); clawStates.setState(States.OPEN);}
 
     @NonNull
     public static Lambda toggleClaw(){  
@@ -46,10 +46,10 @@ public class DepositClaw implements Subsystem {
                 .setInit(() -> {
                     switch (clawStates.getState()){
                         case OPEN:
-                            clawStates.schedule(ClawState.CLOSED);
+                            clawStates.schedule(States.CLOSED);
                             break;
                         case CLOSED:
-                            clawStates.schedule(ClawState.OPEN);
+                            clawStates.schedule(States.OPEN);
                             break;
                     }
                 })
@@ -71,7 +71,7 @@ public class DepositClaw implements Subsystem {
                 .addRequirements(INSTANCE)
                 .setInit(DepositClaw::open);
     }
-    private enum ClawState{
+    private enum States {
         OPEN,
         CLOSED
     }

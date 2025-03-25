@@ -110,7 +110,12 @@ public class Lift implements Subsystem {
                         setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                     });
     }
-
+    public enum States{
+        HIGH,
+        LOW,
+        SPEC,
+        RETRACTED
+    }
     @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.TYPE) @MustBeDocumented
     @Inherited
     public @interface Attach { }

@@ -6,7 +6,7 @@ import static org.firstinspires.ftc.teamcode.commandbase.CommandGroups.liftMediu
 import static org.firstinspires.ftc.teamcode.commandbase.CommandGroups.prepDepo;
 import static org.firstinspires.ftc.teamcode.commandbase.CommandGroups.retract;
 import static org.firstinspires.ftc.teamcode.commandbase.CommandGroups.transfer;
-import static org.firstinspires.ftc.teamcode.commandbase.commandUtil.proxiedCommand;
+import static org.firstinspires.ftc.teamcode.commandbase.CommandUtil.proxiedCommand;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;

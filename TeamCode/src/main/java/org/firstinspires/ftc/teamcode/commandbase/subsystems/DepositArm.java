@@ -73,6 +73,12 @@ public class DepositArm implements Subsystem {
                 new Wait(.200));
 
     }
+    public enum States {
+        EXTEND,
+        UP,
+        WAIT,
+        TRANSFER
+    }
     @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.TYPE) @MustBeDocumented
     @Inherited
     public @interface Attach { }

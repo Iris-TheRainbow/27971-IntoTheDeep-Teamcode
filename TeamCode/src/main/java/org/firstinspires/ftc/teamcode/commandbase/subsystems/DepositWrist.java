@@ -74,7 +74,12 @@ public class DepositWrist implements Subsystem {
                 .setInit(() -> setPosition(.8)),
                 new Wait(.300));
     }
-
+    public enum States {
+        SPEC,
+        TRANSFER,
+        WAIT,
+        DEPOSIT
+    }
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE)
     @MustBeDocumented

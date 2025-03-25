@@ -44,7 +44,4 @@ public class CommandGroups {
     public static Command depositSpec(){
         return new Sequential(DepositWrist.wristSepc(), Lift.goTo(250), DepositClaw.openClaw());
     }
-    public static Command liftHang(){
-        return new Parallel(Lift.goTo(1700), DepositWrist.wristTransfer(), DepositArm.armWait(), Extendo.goTo(0), IntakeWrist.wristTransfer());
-    }
 }

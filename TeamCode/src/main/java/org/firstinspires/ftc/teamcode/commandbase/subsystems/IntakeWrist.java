@@ -77,7 +77,13 @@ public class IntakeWrist implements Subsystem {
                 .setInit(() -> setWristPosition(.24)),
                 new Wait(.350));
     }
-
+    public enum States{
+        TRANSFER,
+        EXTEND,
+        GRAB,
+        VISION,
+        INTAKE
+    }
     @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.TYPE) @MustBeDocumented @Inherited
     public @interface Attach { }
 

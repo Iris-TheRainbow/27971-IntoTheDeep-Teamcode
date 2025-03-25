@@ -8,7 +8,7 @@ import dev.frozenmilk.mercurial.commands.groups.Sequential
 import dev.frozenmilk.mercurial.commands.util.Wait
 import org.firstinspires.ftc.teamcode.util.OrderedPair
 import org.firstinspires.ftc.teamcode.util.Spline
-import org.firstinspires.ftc.teamcode.commandbase.commandUtil
+import org.firstinspires.ftc.teamcode.commandbase.CommandUtil
 import java.util.function.DoubleSupplier
 import java.util.function.Supplier
 import java.util.function.UnaryOperator
@@ -184,7 +184,7 @@ class PidToPointBuilderKt(private var pose: Pose2d, private val pidCommand: PidT
         if (!openedRepeat){
             throw RuntimeException("Attempted to close a repeat without one first being opened")
         }
-        commands.replaceAll(commandUtil::proxiedCommand)
+        commands.replaceAll(CommandUtil::proxiedCommand)
         var i = 0
         while (i < repeatTimes){
             backup.addAll(commands)
@@ -198,7 +198,7 @@ class PidToPointBuilderKt(private var pose: Pose2d, private val pidCommand: PidT
         if (openedRepeat){
             throw RuntimeException("Attempted to build without closing a repeat")
         }
-        commands.replaceAll(commandUtil::proxiedCommand)
+        commands.replaceAll(CommandUtil::proxiedCommand)
         return Sequential(commands)
     }
 

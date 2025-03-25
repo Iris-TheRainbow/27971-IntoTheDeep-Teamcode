@@ -18,10 +18,10 @@ import dev.frozenmilk.mercurial.subsystems.Subsystem;
 import kotlin.annotation.MustBeDocumented;
 
 public class
-templateSubsystem implements Subsystem {
-    public static final templateSubsystem INSTANCE = new templateSubsystem();
+TemplateSubsystem implements Subsystem {
+    public static final TemplateSubsystem INSTANCE = new TemplateSubsystem();
 
-    private templateSubsystem() { }
+    private TemplateSubsystem() { }
 
     @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.TYPE) @MustBeDocumented
     @Inherited
@@ -52,6 +52,6 @@ templateSubsystem implements Subsystem {
     public static Lambda command() {
         return new Lambda("simple")
                 .addRequirements(INSTANCE)
-                .setExecute(templateSubsystem::function);
+                .setExecute(TemplateSubsystem::function);
     }
 }

@@ -67,7 +67,11 @@ public class IntakeRotate implements Subsystem {
                 .setExecute(IntakeRotate::setRotation)
                 .setInterruptible(true);
     }
-
+    public enum States{
+        HOME,
+        AUTO,
+        MANUAL
+    }
 
     @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.TYPE) @MustBeDocumented @Inherited
     public @interface Attach { }
