@@ -19,7 +19,9 @@ import dev.frozenmilk.dairy.core.dependency.VoidDependency;
 import dev.frozenmilk.dairy.core.wrapper.Wrapper;
 
 public class BulkRead implements Feature {
+    private BulkRead() {}
 
+    public static final BulkRead INSTANCE = new BulkRead();
 
     @Override
     public void preUserInitHook(@NonNull Wrapper opMode) {

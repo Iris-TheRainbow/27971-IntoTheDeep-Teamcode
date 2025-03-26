@@ -17,6 +17,9 @@ import dev.frozenmilk.dairy.core.wrapper.Wrapper;
 //import dev.frozenmilk.sinister.loaders.SlothClassLoader;
 
 public class SlothFinder implements Feature {
+    private SlothFinder() {}
+
+    public static final SlothFinder INSTANCE = new SlothFinder();
     private String loadStatus = "Normal load";
     private boolean isSloth = false;
     @Override

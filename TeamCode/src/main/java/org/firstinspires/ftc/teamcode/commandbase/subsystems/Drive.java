@@ -23,6 +23,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
 import org.firstinspires.ftc.teamcode.pathing.Drawing;
+import org.firstinspires.ftc.teamcode.util.OrderedPair;
 import org.firstinspires.ftc.teamcode.util.controllers.HolonomicRobotCentricController;
 import org.firstinspires.ftc.teamcode.pathing.PathingConstantsKt;
 import org.firstinspires.ftc.teamcode.pathing.Evaluation;
@@ -101,7 +102,6 @@ public class Drive implements Subsystem {
         public void preUserLoopHook(@NonNull Wrapper opMode){
                 pinpoint.update();
                 pose = Pinpoint.pinpointToRRPose(pinpoint.getPosition());
-
                 poseHistory.add(pose);
                 Drawing.drawPoseHistory(Telem.packet.fieldOverlay(), poseHistory);
                 drawRobot("#3F51B5", pose);
@@ -115,37 +115,33 @@ public class Drive implements Subsystem {
                 double newTargetY = pose.position.y;
                 double newTargetHead = pose.heading.toDouble();
 
-
                 PoseVelocity2d command = computeCommand(lastTarget);
 
-                if (x < .05 && y < .05){
-                        x = 0;
-                        y = 0;
-                        if (lastTarget.minusExp(Drive.pose).position.norm() > .5){
-                                x = command.linearVel.x;
-                                y = command.linearVel.y;
-                        }
-                        newTargetX = lastTarget.position.x;
-                        newTargetY = lastTarget.position.y;
-                }
-                if (rot < .05 ){
+//                if (Math.abs(Mercurial.gamepad1().leftStickX().state()) < .05 && Math.abs(Mercurial.gamepad1().leftStickY().state()) < .05){
+//                        x = 0;
+//                        y = 0;
+//                        if (lastTarget.minusExp(Drive.pose).position.norm() > .5){
+//                                x = command.linearVel.x;
+//                                y = command.linearVel.y;
+//                        }
+//                        newTargetX = lastTarget.position.x;
+//                        newTargetY = lastTarget.position.y;
+//                }
+                if (Math.abs(Mercurial.gamepad1().rightStickX().state()) < .05 ){
                         rot = 0;
                         if (Math.abs(Math.toDegrees(lastTarget.minusExp(Drive.pose).heading.toDouble())) > 1){
-                                rot = -command.angVel;
+                                rot = command.angVel;
                         }
                         newTargetHead = lastTarget.heading.toDouble();
                 }
-                Telem.packet.addLine("X: " + x);
-                Telem.packet.addLine("Y: " + y);
-                Telem.packet.addLine("Rot: " + rot);
 
                 lastTarget = new Pose2d(newTargetX, newTargetY, newTargetHead);
                 drawRobot("#4CAF50", lastTarget);
                 setDrivePower(new Vector2d(x, y), rot);
         }
         public static void setDrivePower(Vector2d vector, Double rotate) {
-                drawRobot("#3F51B5", pose);
-
+                drawVector("#4CAF50", pose, vector);
+                drawVector("#4CAF50", new Pose2d(pose.position.x + 15, pose.position.y, 0), new Vector2d(0, rotate*5));
                 double heading = 0;
                 // Do the kinematics math
                 double rotX = (vector.x * cos(-heading) - vector.y * sin(-heading)) * 1.1;
@@ -168,6 +164,18 @@ public class Drive implements Subsystem {
                 Canvas canvas = Telem.packet.fieldOverlay();
                 canvas.setStroke(stroke);
                 Drawing.drawRobot(canvas, pose);
+        }
+        private static void drawVector(String stroke, Pose2d pose, Vector2d vector){
+                Canvas canvas = Telem.packet.fieldOverlay();
+                canvas.setStroke(stroke);
+                OrderedPair<Double> endPoint = new OrderedPair<>(pose.position.x + 20 * vector.x,pose.position.y + 20 * vector.y);
+                canvas.strokeLine(pose.position.x, pose.position.y, endPoint.getX(), endPoint.getY());
+        }
+        private static void drawArrowNormalized(String stroke, Pose2d pose, Vector2d vector){
+                Double max = Math.max(vector.x, vector.y);
+                Canvas canvas = Telem.packet.fieldOverlay();
+                canvas.setStroke(stroke);
+                canvas.strokeLine(pose.position.x, pose.position.y, pose.position.x + 3 * vector.x/max, pose.position.y + 3 * vector.y/max);
         }
         private static PoseVelocity2d computeCommand(Pose2d poseTarget){
                 return controller.compute(poseTarget, pose);

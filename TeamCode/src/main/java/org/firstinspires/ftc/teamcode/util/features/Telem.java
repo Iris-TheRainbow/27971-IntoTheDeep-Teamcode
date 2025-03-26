@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -19,6 +20,9 @@ import dev.frozenmilk.dairy.core.dependency.VoidDependency;
 import dev.frozenmilk.dairy.core.wrapper.Wrapper;
 
 public class Telem implements Feature {
+    private Telem() {}
+
+    public static final Telem INSTANCE = new Telem();
     public static TelemetryPacket packet = new TelemetryPacket();
     private static FtcDashboard dash;
     @Override

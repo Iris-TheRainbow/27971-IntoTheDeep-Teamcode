@@ -35,6 +35,7 @@ import dev.frozenmilk.mercurial.commands.util.IfElse;
 import dev.frozenmilk.mercurial.commands.util.Wait;
 
 @TeleOp
+@Telem.Attach
 @Mercurial.Attach
 @DepositArm.Attach
 @DepositWrist.Attach
@@ -48,7 +49,6 @@ import dev.frozenmilk.mercurial.commands.util.Wait;
 @BulkRead.Attach
 @LoopTimes.Attach
 @SlothFinder.Attach
-@Telem.Attach
 public class Tele extends OpMode {
     @Override
     public void init() {
@@ -74,7 +74,7 @@ public class Tele extends OpMode {
         //hang retract
         Mercurial.gamepad1().dpadDown().onTrue(Lift.offset(-10));
 
-        Mercurial.gamepad1().back().whileTrue(proxiedCommand(Lift.retract()));
+        //Mercurial.gamepad1().back().whileTrue(proxiedCommand(Lift.retract()));
         gamepad1.setLedColor(255, 0, 0, 999999999);
     }
 
